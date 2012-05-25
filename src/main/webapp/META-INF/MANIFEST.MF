@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Specification-Title: simple-webapp
+Specification-Version: 1.0-SNAPSHOT
+Implementation-Title: net.openrally.restaurante.webui
+Implementation-Version: 1.0-SNAPSHOT

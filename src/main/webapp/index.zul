@@ -1,0 +1,9 @@
+<zk>
+<window title="Property Retrieval" border="normal">
+    Enter a property name: <textbox id="input"/>
+    <button label="Retrieve"
+     onClick="result.setValue(System.getProperty(input.getValue()))"/>
+    <separator/>
+    <label id="result"/>
+</window>
+</zk>
