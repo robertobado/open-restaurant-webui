@@ -1,0 +1,10 @@
+## generic files to ignore
+*~
+*.lock
+*.out
+*.class
+.project
+.classpath
+.settings
+target
+

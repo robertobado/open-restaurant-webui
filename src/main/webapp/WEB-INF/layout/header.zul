@@ -1,0 +1,58 @@
+<zk xmlns:n="http://www.w3.org/1999/xhtml">
+	<div class="navbar navbar-fixed-top"
+		apply="net.openrally.restaurant.webui.controller.HeaderController">
+		<div class="navbar-inner">
+			<div class="container-fluid">
+				<n:a class="btn btn-navbar" data-toggle="collapse"
+					data-target=".nav-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</n:a>
+				<div class="nav-collapse">
+					<n:ul class="nav">
+						<n:li>
+							<n:a href="/">
+								<n:h3>Open Restaurant</n:h3>
+							</n:a>
+						</n:li>
+						<n:li>
+							<n:a href="/">Home</n:a>
+						</n:li>
+						<n:li>
+							<n:a href="#about">About</n:a>
+						</n:li>
+						<n:li>
+							<n:a href="#contact">Contact</n:a>
+						</n:li>
+						<n:li>
+							<n:a href="#">
+								<label id="headerLabelSignUp">
+									Sign Up!
+								</label>
+							</n:a>
+						</n:li>
+					</n:ul>
+					<n:p class="navbar-text pull-right">
+						<n:ul class="nav pull-right">
+							<n:li>
+								<n:a href="#">
+									<label id="headerLabelLogin">
+										Login
+									</label>
+								</n:a>
+							</n:li>
+							<n:li>
+								<n:a href="#">
+									<label id="headerLabelLogout">
+										Logout
+									</label>
+								</n:a>
+							</n:li>
+						</n:ul>
+					</n:p>
+				</div>
+			</div>
+		</div>
+	</div>
+</zk>

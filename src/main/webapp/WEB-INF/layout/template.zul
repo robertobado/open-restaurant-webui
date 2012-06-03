@@ -1,0 +1,11 @@
+<zk xmlns:n="http://www.w3.org/1999/xhtml">
+	<style src="resources/css/bootstrap.css" />
+	<style src="resources/css/style.css" />
+
+	<include src="/WEB-INF/layout/header.zul" />
+	<div style="padding-top: 47px;" />
+	
+	<div self="@insert(content)"/>
+
+	<include src="/WEB-INF/layout/footer.zul" />
+</zk>

@@ -1,0 +1,57 @@
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="WEB-INF/layout/template.zul"?>
+<zk xmlns:n="http://www.w3.org/1999/xhtml">
+	<div self="@define(content)" class="container-fluid"
+		apply="net.openrally.restaurant.webui.controller.LoginController">
+		<div class="row-fluid" style="padding-top: 10px;">
+			<div class="span12" align="center">
+				<n:h1>Sign in to view your dashboard</n:h1>
+
+				<groupbox mold="3d" id="groupBoxWelcome" width="350px"
+					visible="true" style="padding-top: 20px;" closable="false">
+					<caption label="Login" />
+
+					<div class="alert alert-error" id="contentDivErrorAlert" visible="false">
+						<label id="contentLabelErrorMessage" />
+					</div>
+
+					<hlayout width="260px">
+						<grid width="240px">
+							<rows>
+								<row>
+									<cell sclass="head" width="70px">
+										<label>Company Id</label>
+									</cell>
+									<cell width="140px">
+										<textbox
+											id="contentTextBoxCompanyId" width="120px" />
+									</cell>
+								</row>
+								<row>
+									<cell sclass="head" width="70px">
+										<label>Username</label>
+									</cell>
+									<cell width="140px">
+										<textbox
+											id="contentTextBoxUsername" width="120px" />
+									</cell>
+								</row>
+								<row>
+									<cell sclass="head" width="70px">
+										<label>Password</label>
+									</cell>
+									<cell width="140px">
+										<textbox
+											id="contentTextBoxPassword" type="password" width="120px" />
+									</cell>
+								</row>
+							</rows>
+						</grid>
+					</hlayout>
+					<vbox>
+						<button label="Go" id="contentButtonLoginGo" />
+					</vbox>
+				</groupbox>
+			</div>
+		</div>
+	</div>
+</zk>
