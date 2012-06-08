@@ -4,7 +4,7 @@
 		apply="net.openrally.restaurant.webui.controller.LoginController">
 		<div class="row-fluid" style="padding-top: 10px;">
 			<div class="span12" align="center">
-				<n:h1>Sign in to view your dashboard</n:h1>
+				<n:h1>Sign in to view your account</n:h1>
 
 				<groupbox mold="3d" id="groupBoxWelcome" width="350px"
 					visible="true" style="padding-top: 20px;" closable="false">

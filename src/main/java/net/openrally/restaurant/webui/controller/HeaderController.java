@@ -10,10 +10,14 @@ import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Vbox;
 
 public class HeaderController extends SelectorComposer<Div> {
 
 	private static final long serialVersionUID = -1672648880330369612L;
+	
+	@Wire
+	private Vbox headerVboxAdministration;
 	
 	@Wire
 	private Label headerLabelLogin;
@@ -36,6 +40,7 @@ public class HeaderController extends SelectorComposer<Div> {
 	    }
 	    else{
 	    	headerLabelLogout.setVisible(false);
+	    	headerVboxAdministration.setVisible(false);
 	    }
 	}
 
@@ -55,6 +60,9 @@ public class HeaderController extends SelectorComposer<Div> {
 		Executions.sendRedirect("index.zul");
 	}
 	
-	
+	@Listen("onClick=#headerLabelProducts")
+	public void headerLabelProducts() {	
+		Executions.sendRedirect("products.zul");
+	}
 	
 }

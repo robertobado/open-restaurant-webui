@@ -38,6 +38,19 @@ public class LoginController extends SelectorComposer<Div>{
 	@Wire
 	private Label contentLabelErrorMessage;
 	
+	private String redirectUrl;
+	
+	public void doAfterCompose(Div component) throws Exception {
+		super.doAfterCompose(component);
+		
+		redirectUrl = Executions.getCurrent().getParameter("redirectUrl");
+		
+		if(StringUtils.isBlank(redirectUrl)){
+			redirectUrl = "dashboard.zul";
+		}
+		
+	}
+	
 	@Listen("onClick=#contentButtonLoginGo")
 	public void contentButtonLoginGo() throws ClientProtocolException, IOException {
 		validate();
@@ -51,8 +64,8 @@ public class LoginController extends SelectorComposer<Div>{
 		contentButtonLoginGo.setDisabled(false);
 		
 		if(loginResult){
-			contentDivErrorAlert.setVisible(false);
-			Executions.sendRedirect("dashboard.zul");
+			contentDivErrorAlert.setVisible(false);			
+			Executions.sendRedirect(redirectUrl);
 		}
 		else{
 			contentDivErrorAlert.setVisible(true);

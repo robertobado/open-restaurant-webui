@@ -79,7 +79,8 @@ public class BaseManager {
 		 synchronized(zkSession){
 			 User user = (User) zkSession.getAttribute(SESSION_USER_KEY);
 	            if(user==null){
-	                zkSession.setAttribute(SESSION_USER_KEY, user = new User());
+	            	user = new User();
+	                zkSession.setAttribute(SESSION_USER_KEY, user);
 	            }
 	            return user;
 	        }

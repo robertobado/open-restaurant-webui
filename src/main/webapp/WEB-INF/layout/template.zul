@@ -3,7 +3,7 @@
 	<style src="resources/css/style.css" />
 
 	<include src="/WEB-INF/layout/header.zul" />
-	<div style="padding-top: 47px;" />
+	<div style="padding-top: 60px;" />
 	
 	<div self="@insert(content)"/>
 

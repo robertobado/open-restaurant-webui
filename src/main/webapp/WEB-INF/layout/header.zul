@@ -20,18 +20,33 @@
 							<n:a href="/">Home</n:a>
 						</n:li>
 						<n:li>
-							<n:a href="#about">About</n:a>
-						</n:li>
-						<n:li>
-							<n:a href="#contact">Contact</n:a>
-						</n:li>
-						<n:li>
 							<n:a href="#">
 								<label id="headerLabelSignUp">
 									Sign Up!
 								</label>
 							</n:a>
 						</n:li>
+						<vbox id="headerVboxAdministration">
+							<n:ul class="nav">
+								<n:li class="dropdown">
+									<n:a href="#"
+										class="dropdown-toggle" data-toggle="dropdown">
+										Administration
+										<n:b class="caret"></n:b>
+									</n:a>
+									<n:ul class="dropdown-menu">
+										<n:li>
+											<n:a href="#">
+												<label
+													id="headerLabelProducts">
+													Products
+												</label>
+											</n:a>
+										</n:li>
+									</n:ul>
+								</n:li>
+							</n:ul>
+						</vbox>
 					</n:ul>
 					<n:p class="navbar-text pull-right">
 						<n:ul class="nav pull-right">

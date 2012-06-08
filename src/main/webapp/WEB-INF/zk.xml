@@ -15,7 +15,7 @@ Copyright (C) 2006 Potix Corporation. All Rights Reserved.
 	<!-- Defines the application's name -->
 	<preference>
 		<name>org.zkoss.zk.ui.WebApp.name</name>
-		<value>simple-webapp</value>
+		<value>Open Restaurant WebUI</value>
 	</preference>
 
 	<!-- Turn on if you want to debug JavaScript.
@@ -248,7 +248,7 @@ Copyright (C) 2006 Potix Corporation. All Rights Reserved.
 		-->
 		<!-- Turn on the following if you want to reset the session-timeout
 		counter when receiving onTimer, like any other request
-		In other words, the session is never timeoout if the desktop has
+		In other words, the session is never timeout if the desktop has
 		a timer.
 		<timer-keep-alive>true</timer-keep-alive>
 		-->
@@ -266,7 +266,7 @@ Copyright (C) 2006 Potix Corporation. All Rights Reserved.
 		<!-- Comment it out if you prefer to show a message instead of redirecting
 			Note: an empty URL can cause the browser to reload the same URL
 		-->
-		<timeout-uri>/timeout.zul</timeout-uri>
+		<timeout-uri>/login.zul</timeout-uri>
 
 		<!-- Uncomment it if you prefer to have a custom message.
 			Notice that, to make it work, timeout-uri shall be removed.
