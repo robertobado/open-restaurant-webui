@@ -1,0 +1,7 @@
+@import url(../reindeer/styles.css);
+
+.v-horizontallayout-headerBar{
+	background-color: #1E5D8A;
+	height: 40px;
+	width: 100%;
+}
