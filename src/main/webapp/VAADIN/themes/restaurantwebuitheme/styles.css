@@ -1,7 +1,29 @@
 @import url(../reindeer/styles.css);
 
-.v-horizontallayout-headerBar{
+.headerBar {
 	background-color: #1E5D8A;
-	height: 40px;
-	width: 100%;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#356E98),
+		to(#1E5D8A) );
+	background-image: -moz-linear-gradient(top, #356E98, #1E5D8A);
+	border-bottom-left-radius: 6px;
+	border-bottom-right-radius: 6px;
+	-webkit-border-bottom-left-radius: 6px;
+	-webkit-border-bottom-right-radius: 6px;
+	-moz-border-radius-bottomleft: 6px;
+	-moz-border-radius-bottomright: 6px;
+	color: white;
+	font-weight: bold;
+	text-shadow: black 1px 1px 1px;
+	border: 1px solid #1A5179;
+	border-top: 0;
+	padding: 0 5px;
+	height: 25px;
+}
+
+.headerBarLabel {
+	color: white;
+}
+
+.transparentPanel{
+	background-color: transparent;
 }
