@@ -11,7 +11,7 @@ public class HeaderTopBar extends HorizontalLayout {
 	
 	public HeaderTopBar(){
 		
-		setStyleName("headerBar");
+		setStyleName("headerTopBar");
 		setWidth("80%");
 		setHeight("25px");
 		

@@ -1,6 +1,6 @@
 @import url(../reindeer/styles.css);
 
-.headerBar {
+.headerTopBar {
 	background-color: #1E5D8A;
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#356E98),
 		to(#1E5D8A) );
@@ -18,12 +18,29 @@
 	border-top: 0;
 	padding: 0 5px;
 	height: 25px;
+	float: center; 
+	margin: 0 auto;
+	width: 900px;
 }
 
+.headerBar {
+	height: 81px;
+	background-color: #015FA3;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#337EB5),
+		to(#015FA3) );
+	background-image: -moz-linear-gradient(top, #337EB5, #015FA3);
+	border-bottom: 1px solid #00467A;
+	border-top: 1px solid #2B6590;
+	min-width: 1000px;
+	padding: 0 4%;
+	text-align: center;
+}
+
+}
 .headerBarLabel {
 	color: white;
 }
 
-.transparentPanel{
+.transparentPanel {
 	background-color: transparent;
 }
