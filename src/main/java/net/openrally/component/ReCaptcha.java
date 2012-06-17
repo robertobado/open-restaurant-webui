@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.openrally.MainApplication;
+import net.openrally.SessionStorage;
 import net.openrally.util.StringUtilities;
 
 import org.apache.commons.lang.StringUtils;
@@ -112,9 +113,11 @@ public class ReCaptcha extends VerticalLayout {
 	public boolean verifyResponse() {
 
 		String response = userInput.getValue().toString();
+		
+		SessionStorage sessionStorage = ((MainApplication) getApplication())
+		.getSessionStorage();
 
-		String ipAddress = ((MainApplication) getApplication())
-				.getUserIpAddress();
+		String ipAddress = (String) sessionStorage.getSessionValue(SessionStorage.USER_IP_ADDRESS);
 
 		if (StringUtils.isBlank(response)) {
 			userInput.setComponentError(new UserError(

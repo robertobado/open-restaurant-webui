@@ -1,6 +1,5 @@
 package net.openrally;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import net.openrally.composite.FooterBar;
@@ -23,14 +22,14 @@ public class MainApplication extends Application {
 	private HorizontalLayout mainArea;
 	private FooterBar footerBar;
 	
-	private Map<String, Object> contextMap;
-	
 	private String userIpAddress;
+	
+	private SessionStorage sessionStorage;
 
 	@Override
 	public void init() {
 		
-		contextMap = new HashMap<String, Object>();
+		sessionStorage = new SessionStorage();
 		
 		window = new Window("Open Restaurant WebUI");
 		setMainWindow(window);
@@ -64,12 +63,12 @@ public class MainApplication extends Application {
 				.getBrowser();
 		String userIpAddress = webBrowser.getAddress();
 		
-		conte
+		sessionStorage.setSessionValue(SessionStorage.USER_IP_ADDRESS, userIpAddress);
 		
 	}
 	
-	public String getUserIpAddress(){
-		return userIpAddress;
+	public SessionStorage getSessionStorage(){
+		return sessionStorage;
 	}
 
 }

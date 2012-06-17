@@ -1,9 +1,14 @@
 package net.openrally.manager;
 
-import java.awt.PageAttributes.MediaType;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
+
+import javax.ws.rs.core.MediaType;
+
+import net.openrally.MainApplication;
+import net.openrally.SessionStorage;
+import net.openrally.entity.User;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
@@ -14,14 +19,24 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 
 import com.google.gson.Gson;
+import com.sun.jersey.spi.container.ContainerRequest;
+import com.vaadin.ui.CustomComponent;
 
-public class BaseManager {
+public class BaseManager extends CustomComponent{
+	
+	private static final long serialVersionUID = -2263384602853522836L;
+	
 	public static final String CORE_BASE_ADDRESS_PROPERTY_NAME = "restaurant.core.address";
 	public static final String SESSION_USER_KEY = "session.user";
 	public static final String SLASH = "/";
 
 	private static Properties properties;
 	protected static Gson gson = new Gson();
+	private SessionStorage sessionStorage;
+
+	public BaseManager(SessionStorage sessionStorage) {
+		this.sessionStorage = sessionStorage;
+	}
 
 	public static Properties getProperties() {
 
@@ -45,7 +60,7 @@ public class BaseManager {
 		return "http://localhost:8181";
 	}
 
-	protected static HttpPost generateBasicHttpPost(String path) {
+	protected HttpPost generateBasicHttpPost(String path) {
 		HttpPost httpPost = new HttpPost(getCoreBaseAddress() + SLASH + path);
 
 		Header acceptHeader = new BasicHeader(HttpHeaders.ACCEPT,
@@ -64,26 +79,19 @@ public class BaseManager {
 
 		return httpPost;
 	}
-
-	public static User getSessionUser() {
-		Session zkSession = Sessions.getCurrent();
-		synchronized (zkSession) {
-			User user = (User) zkSession.getAttribute(SESSION_USER_KEY);
-			if (user == null) {
-				user = new User();
-				zkSession.setAttribute(SESSION_USER_KEY, user);
-			}
-			return user;
-		}
+	
+	public SessionStorage getSessionStorage(){		
+		return sessionStorage;
 	}
 
-	protected static String getAuthorizationToken() {
-		User user = getSessionUser();
-		if (null == user) {
-			return null;
-		}
+	public User getSessionUser() {
+		
+		return (User) getSessionStorage().getSessionValue(SessionStorage.USER);
+	}
 
-		return user.getAuthorizationToken();
+	protected String getAuthorizationToken() {
+		
+		return (String) getSessionStorage().getSessionValue(SessionStorage.AUTHORIZATION_TOKEN);
 
 	}
 
