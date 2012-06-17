@@ -3,6 +3,7 @@ package net.openrally.composite;
 import net.openrally.content.SignUpContent;
 
 import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -41,7 +42,10 @@ public class HeaderTabBar extends TabSheet implements SelectedTabChangeListener 
 		mainArea.removeAllComponents();
 
 		if (tabPosition == 1) {
-			mainArea.addComponent(new SignUpContent());
+			SignUpContent signUpContent = new SignUpContent();
+			signUpContent.setStyleName("signUpContent");
+			mainArea.addComponent(signUpContent);
+			mainArea.setComponentAlignment(signUpContent, Alignment.TOP_CENTER);
 		} else {
 			Label label = new Label("You have selected tab number "
 					+ tabPosition);
