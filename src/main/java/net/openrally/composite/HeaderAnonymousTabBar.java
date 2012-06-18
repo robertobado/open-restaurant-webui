@@ -11,7 +11,7 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
 
-public class HeaderTabBar extends TabSheet implements SelectedTabChangeListener {
+public class HeaderAnonymousTabBar extends TabSheet implements SelectedTabChangeListener {
 
 	private static final long serialVersionUID = -6509314446489691377L;
 
@@ -22,7 +22,7 @@ public class HeaderTabBar extends TabSheet implements SelectedTabChangeListener 
 
 	private HorizontalLayout mainArea;
 
-	public HeaderTabBar(HorizontalLayout mainArea) {
+	public HeaderAnonymousTabBar(HorizontalLayout mainArea) {
 		addTab(new Panel(), "Home", homeIcon);
 		addTab(new Panel(), "Sign Up", signUpIcon);
 		setHeight("34px");

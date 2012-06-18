@@ -70,5 +70,9 @@ public class MainApplication extends Application {
 	public SessionStorage getSessionStorage(){
 		return sessionStorage;
 	}
+	
+	public void adjustAfterLogin(){
+		headerBar.adjustAfterLogin();
+	}
 
 }

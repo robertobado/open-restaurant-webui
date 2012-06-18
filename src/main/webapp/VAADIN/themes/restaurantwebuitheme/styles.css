@@ -51,3 +51,11 @@
 .recaptcha{
 	text-align: center;
 }
+
+.headerBarLoginButton{
+	padding-right: 10px;
+}
+
+.headerBarLogoutButton{
+	padding-right: 10px;
+}

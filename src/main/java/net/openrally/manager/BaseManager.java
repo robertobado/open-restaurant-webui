@@ -6,7 +6,6 @@ import java.util.Properties;
 
 import javax.ws.rs.core.MediaType;
 
-import net.openrally.MainApplication;
 import net.openrally.SessionStorage;
 import net.openrally.entity.User;
 
@@ -85,14 +84,19 @@ public class BaseManager extends CustomComponent{
 	}
 
 	public User getSessionUser() {
-		
-		return (User) getSessionStorage().getSessionValue(SessionStorage.USER);
+		User sessionUser = (User) getSessionStorage().getSessionValue(SessionStorage.USER);
+		if(null == sessionUser){
+			sessionUser = new User();
+			getSessionStorage().setSessionValue(SessionStorage.USER, sessionUser);
+		}
+		return sessionUser;
 	}
 
 	protected String getAuthorizationToken() {
 		
-		return (String) getSessionStorage().getSessionValue(SessionStorage.AUTHORIZATION_TOKEN);
-
+		User sessionUser = getSessionUser();
+		
+		return sessionUser.getAuthorizationToken();
 	}
 
 	protected static HttpClient getHttpClient() {
