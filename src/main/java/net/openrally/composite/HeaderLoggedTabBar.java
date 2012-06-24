@@ -1,9 +1,10 @@
 package net.openrally.composite;
 
-import net.openrally.content.SignUpContent;
+import net.openrally.MainApplication;
+import net.openrally.SessionStorage;
+import net.openrally.content.ConsumptionIdentifierContent;
 
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -25,13 +26,12 @@ public class HeaderLoggedTabBar extends TabSheet implements SelectedTabChangeLis
 			"images/user.png");
 
 	private HorizontalLayout mainArea;
-	
+		
 	public HeaderLoggedTabBar(HorizontalLayout mainArea) {
 		addTab(new Panel(), "Mesas", tableIcon);
 		addTab(new Panel(), "Produtos", productIcon);
-		addTab(new Panel(), "Usuários", userIcon);
 		setHeight("34px");
-		setWidth("300px");
+		setWidth("168px");
 		setStyleName("headerBarTab");
 		addListener(this);
 
@@ -46,13 +46,11 @@ public class HeaderLoggedTabBar extends TabSheet implements SelectedTabChangeLis
 		mainArea.removeAllComponents();
 
 		if (tabPosition == 0) {
-			Label label = new Label("Mesas");
-			mainArea.addComponent(label);
+			 SessionStorage sessionStorage = ((MainApplication) getApplication())
+						.getSessionStorage();
+			mainArea.addComponent(new ConsumptionIdentifierContent(sessionStorage));
 		} else if (tabPosition == 1) {
 			Label label = new Label("Produtos");
-			mainArea.addComponent(label);
-		} else if (tabPosition == 2) {
-			Label label = new Label("Usuários");
 			mainArea.addComponent(label);
 		}
 

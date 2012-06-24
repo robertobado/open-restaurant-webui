@@ -13,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
@@ -77,6 +78,27 @@ public class BaseManager extends CustomComponent{
 		}
 
 		return httpPost;
+	}
+	
+	protected HttpGet generateBasicHttpGet(String path) {
+		HttpGet httpGet = new HttpGet(getCoreBaseAddress() + SLASH
+				+ path);
+
+		Header acceptHeader = new BasicHeader(HttpHeaders.ACCEPT,
+				MediaType.APPLICATION_JSON);
+		httpGet.addHeader(acceptHeader);
+
+		Header contentTypeHeader = new BasicHeader(HttpHeaders.CONTENT_TYPE,
+				MediaType.APPLICATION_JSON);
+		httpGet.addHeader(contentTypeHeader);
+
+		if (!StringUtils.isBlank(getAuthorizationToken())) {
+			Header loginTokenHeader = new BasicHeader(
+					ContainerRequest.AUTHORIZATION, getAuthorizationToken());
+			httpGet.addHeader(loginTokenHeader);
+		}
+
+		return httpGet;
 	}
 	
 	public SessionStorage getSessionStorage(){		

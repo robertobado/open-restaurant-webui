@@ -17,8 +17,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 
 public class LoginManager extends BaseManager {
-	
-	private static final String PATH = "/login";
+
+	private static final long serialVersionUID = 3941308840730651604L;
+	private static final String PATH = "login";
 
 	public LoginManager(SessionStorage sessionStorage) {
 		super(sessionStorage);
