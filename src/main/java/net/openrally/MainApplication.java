@@ -1,7 +1,5 @@
 package net.openrally;
 
-import java.util.Map;
-
 import net.openrally.composite.FooterBar;
 import net.openrally.composite.HeaderBar;
 
