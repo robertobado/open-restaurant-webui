@@ -11,7 +11,9 @@ import net.openrally.util.RandomGenerator;
 import net.openrally.util.StringUtilities;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 
 import com.vaadin.data.Container;
@@ -20,9 +22,14 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Window.Notification;
 
 public class ConsumptionIdentifierManager extends BaseManager {
 	
+	private static final int FAILURE_NOTIFICATION_DISMISS_TIME = -1;
+
+	private static final int SUCCESS_NOTIFICATION_DISMISS_TIME = 3000;
+
 	private static final long serialVersionUID = 4070524836393555115L;
 	
 	private static final ThemeResource editIcon = new ThemeResource(
@@ -63,11 +70,13 @@ public class ConsumptionIdentifierManager extends BaseManager {
             Button editButton = new Button();
             editButton.addListener(editButtonListener);
             editButton.setIcon(editIcon);
+            editButton.setData(consumptionIdentifier);
             item.getItemProperty(PROPERTY_EDIT).setValue(editButton);
             
             Button deleteButton = new Button();
             deleteButton.addListener(deleteButtonListener);
             deleteButton.setIcon(deleteIcon);
+            deleteButton.setData(consumptionIdentifier);
             item.getItemProperty(PROPERTY_DELETE).setValue(deleteButton);
             
         }
@@ -120,5 +129,57 @@ public class ConsumptionIdentifierManager extends BaseManager {
 			return new LinkedList<ConsumptionIdentifier>();
 		}
 	}
+
+	public Notification deleteEntity(ConsumptionIdentifier consumptionIdentifier) {
+		HttpDelete httpDelete = generateBasicHttpDelete(PATH + SLASH + consumptionIdentifier.getConsumptionIdentifierId());
+	
+		Notification notification;
+	
+		try {
+			HttpResponse response = getHttpClient().execute(httpDelete);
+			
+			if(HttpStatus.SC_OK == response.getStatusLine().getStatusCode()){
+				notification = new Notification(
+                        "Sucesso",
+                        "Mesa removida com sucesso",
+                        Notification.TYPE_HUMANIZED_MESSAGE);
+				notification.setDelayMsec(SUCCESS_NOTIFICATION_DISMISS_TIME);
+			}
+			else if(HttpStatus.SC_CONFLICT == response.getStatusLine().getStatusCode()){
+				notification = new Notification(
+                        "Erro ao remover mesa",
+                        "Existem registros associados à mesa",
+                        Notification.TYPE_WARNING_MESSAGE);
+				notification.setDelayMsec(FAILURE_NOTIFICATION_DISMISS_TIME);
+			} else if(HttpStatus.SC_NOT_FOUND == response.getStatusLine().getStatusCode()){
+				notification = new Notification(
+                        "Erro ao remover mesa",
+                        "Mesa não encontrada",
+                        Notification.TYPE_ERROR_MESSAGE);
+				notification.setDelayMsec(FAILURE_NOTIFICATION_DISMISS_TIME);
+			} else{
+				notification = new Notification(
+                        "Erro ao remover mesa",
+                        "Erro desconhecido",
+                        Notification.TYPE_ERROR_MESSAGE);
+				notification.setDelayMsec(FAILURE_NOTIFICATION_DISMISS_TIME);
+			}
+		} catch (ClientProtocolException e) {
+			notification = new Notification(
+                    "Erro ao remover mesa",
+                    "Erro desconhecido",
+                    Notification.TYPE_ERROR_MESSAGE);
+			notification.setDelayMsec(FAILURE_NOTIFICATION_DISMISS_TIME);
+		} catch (IOException e) {
+			notification = new Notification(
+                    "Erro ao remover mesa",
+                    "Erro desconhecido",
+                    Notification.TYPE_ERROR_MESSAGE);
+			notification.setDelayMsec(FAILURE_NOTIFICATION_DISMISS_TIME);
+		}
+		return notification;
+	}
+
+
 
 }

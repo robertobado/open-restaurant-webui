@@ -20,8 +20,6 @@ public class MainApplication extends Application {
 	private HorizontalLayout mainArea;
 	private FooterBar footerBar;
 	
-	private String userIpAddress;
-	
 	private SessionStorage sessionStorage;
 
 	@Override

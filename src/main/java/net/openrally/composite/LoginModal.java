@@ -52,6 +52,7 @@ public class LoginModal extends Window implements Button.ClickListener{
 		layout.setComponentAlignment(companyIdLabel, Alignment.TOP_RIGHT);
 		
 		companyIdTextField = new TextField();
+		companyIdTextField.setValue("1");
 		layout.addComponent(companyIdTextField, 1, 1);
 		layout.setComponentAlignment(companyIdTextField, Alignment.TOP_LEFT);
 		
@@ -61,6 +62,7 @@ public class LoginModal extends Window implements Button.ClickListener{
 		layout.setComponentAlignment(usernameLabel, Alignment.TOP_RIGHT);
 		
 		usernameTextField = new TextField();
+		usernameTextField.setValue("administrator");
 		layout.addComponent(usernameTextField, 1, 2);
 		layout.setComponentAlignment(usernameTextField, Alignment.TOP_LEFT);
 		
@@ -70,6 +72,7 @@ public class LoginModal extends Window implements Button.ClickListener{
 		layout.setComponentAlignment(passwordLabel, Alignment.TOP_RIGHT);
 		
 		passwordField = new PasswordField();
+		passwordField.setValue("iCxKKdRJzb");
 		layout.addComponent(passwordField, 1, 3);
 		layout.setComponentAlignment(passwordField, Alignment.TOP_LEFT);
 		

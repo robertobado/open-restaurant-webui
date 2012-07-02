@@ -13,8 +13,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 
@@ -61,44 +63,60 @@ public class BaseManager extends CustomComponent{
 	}
 
 	protected HttpPost generateBasicHttpPost(String path) {
-		HttpPost httpPost = new HttpPost(getCoreBaseAddress() + SLASH + path);
+		HttpPost request = new HttpPost(getCoreBaseAddress() + SLASH + path);
 
-		Header acceptHeader = new BasicHeader(HttpHeaders.ACCEPT,
-				MediaType.APPLICATION_JSON);
-		httpPost.addHeader(acceptHeader);
+		addAcceptTypeAndContentTypeJson(request);
 
-		Header contentTypeHeader = new BasicHeader(HttpHeaders.CONTENT_TYPE,
-				MediaType.APPLICATION_JSON);
-		httpPost.addHeader(contentTypeHeader);
+		addAuthorizationHeader(request);
 
-		if (!StringUtils.isBlank(getAuthorizationToken())) {
-			Header loginTokenHeader = new BasicHeader(
-					ContainerRequest.AUTHORIZATION, getAuthorizationToken());
-			httpPost.addHeader(loginTokenHeader);
-		}
-
-		return httpPost;
+		return request;
 	}
 	
 	protected HttpGet generateBasicHttpGet(String path) {
-		HttpGet httpGet = new HttpGet(getCoreBaseAddress() + SLASH
+		HttpGet request = new HttpGet(getCoreBaseAddress() + SLASH
 				+ path);
 
+		addAcceptTypeAndContentTypeJson(request);
+
+		addAuthorizationHeader(request);
+
+		return request;
+	}
+	
+	protected HttpDelete generateBasicHttpDelete(String path) {
+		HttpDelete request = new HttpDelete(getCoreBaseAddress() + SLASH
+				+ path);
+
+		addAcceptTypeAndContentTypeJson(request);
+
+		addAuthorizationHeader(request);
+
+		return request;
+	}
+	
+	private void addAcceptTypeJson(HttpRequestBase request){
 		Header acceptHeader = new BasicHeader(HttpHeaders.ACCEPT,
 				MediaType.APPLICATION_JSON);
-		httpGet.addHeader(acceptHeader);
-
+		request.addHeader(acceptHeader);
+	}
+	
+	private void addContentTypeJson(HttpRequestBase request){
 		Header contentTypeHeader = new BasicHeader(HttpHeaders.CONTENT_TYPE,
 				MediaType.APPLICATION_JSON);
-		httpGet.addHeader(contentTypeHeader);
-
+		request.addHeader(contentTypeHeader);
+	}
+	
+	private void addAcceptTypeAndContentTypeJson(HttpRequestBase request){
+		addAcceptTypeJson(request);
+		addContentTypeJson(request);
+	}
+	
+	private void addAuthorizationHeader(HttpRequestBase request){
 		if (!StringUtils.isBlank(getAuthorizationToken())) {
 			Header loginTokenHeader = new BasicHeader(
 					ContainerRequest.AUTHORIZATION, getAuthorizationToken());
-			httpGet.addHeader(loginTokenHeader);
+			request.addHeader(loginTokenHeader);
 		}
-
-		return httpGet;
 	}
 	
 	public SessionStorage getSessionStorage(){		
