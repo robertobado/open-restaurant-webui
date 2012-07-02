@@ -53,8 +53,7 @@ public class ConsumptionIdentifierContent extends TabSheet implements SelectedTa
 		listTable.setSelectable(true);
         listTable.setImmediate(true);
         
-        // connect data source
-        listTable.setContainerDataSource(consumptionIdentifierManager.getContainer(new EditButtonListener(), new DeleteButtonListener()));
+        refreshEntityList();
 
         // turn on column reordering and collapsing
         listTable.setColumnReorderingAllowed(true);
@@ -66,6 +65,11 @@ public class ConsumptionIdentifierContent extends TabSheet implements SelectedTa
 		listPanel = new Panel();
 		listPanel.addComponent(listTable);
 		addTab(listPanel, "Listagem", listIcon);
+	}
+	
+	private void refreshEntityList(){
+		// connect data source
+        listTable.setContainerDataSource(consumptionIdentifierManager.getContainer(new EditButtonListener(), new DeleteButtonListener()));
 	}
 	
 	private void initializeAddTab(){
@@ -93,6 +97,8 @@ public class ConsumptionIdentifierContent extends TabSheet implements SelectedTa
 		
 		Button submitButton = new Button("Salvar");
 		
+		submitButton.addListener(Button.ClickEvent.class, this, "saveNewEntityButtonClickListener");
+		
 		grid.addComponent(submitButton, 0, 2, 1, 2);
 		grid.setComponentAlignment(submitButton, Alignment.MIDDLE_CENTER);
 		
@@ -110,7 +116,6 @@ public class ConsumptionIdentifierContent extends TabSheet implements SelectedTa
 	}
 	
 	private class EditButtonListener implements Button.ClickListener{
-
 		private static final long serialVersionUID = -6500155514004773112L;
 
 		public void buttonClick(ClickEvent event) {
@@ -127,7 +132,17 @@ public class ConsumptionIdentifierContent extends TabSheet implements SelectedTa
 			ConsumptionIdentifier consumptionIdentifier = (ConsumptionIdentifier) ((Button) event.getComponent()).getData();
 			Notification notification = consumptionIdentifierManager.deleteEntity(consumptionIdentifier);
 			getWindow().showNotification(notification);
+			refreshEntityList();
 		}
+	}
+	
+	public void saveNewEntityButtonClickListener(Button.ClickEvent event){
+		ConsumptionIdentifier consumptionIdentifier = new ConsumptionIdentifier();
+		consumptionIdentifier.setIdentifier((String) newEntityIdentifier.getValue());
+		consumptionIdentifier.setDescription((String) newEntityDescription.getValue());
+		Notification notification = consumptionIdentifierManager.createEntity(consumptionIdentifier);
+		getWindow().showNotification(notification);
+		refreshEntityList();
 	}
 
 }
