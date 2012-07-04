@@ -7,7 +7,6 @@ import java.util.List;
 import net.openrally.SessionStorage;
 import net.openrally.entity.ConsumptionIdentifier;
 import net.openrally.entity.ConsumptionIdentifierList;
-import net.openrally.util.RandomGenerator;
 import net.openrally.util.StringUtilities;
 
 import org.apache.http.HttpResponse;
@@ -16,6 +15,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 
 import com.vaadin.data.Container;
@@ -91,8 +91,6 @@ public class ConsumptionIdentifierManager extends BaseManager {
 	}
 
 	private List<ConsumptionIdentifier> getConsumptionIdentifiers() {
-		List<ConsumptionIdentifier> list = new LinkedList<ConsumptionIdentifier>();
-
 		HttpGet httpGet = generateBasicHttpGet(PATH);
 		try {
 			HttpResponse response = getHttpClient().execute(httpGet);
@@ -184,5 +182,37 @@ public class ConsumptionIdentifierManager extends BaseManager {
 
 		return notification;
 	}
+
+	public Notification updateEntity(ConsumptionIdentifier instance) {
+		String requestBody = gson.toJson(instance);
+
+		HttpPut httpPut = generateBasicHttpPut(PATH + SLASH + instance.getConsumptionIdentifierId());
+
+		Notification notification;
+		try {
+			httpPut.setEntity(new StringEntity(requestBody));
+			HttpResponse response = getHttpClient().execute(httpPut);
+
+			if (HttpStatus.SC_OK == response.getStatusLine()
+					.getStatusCode()) {
+				notification = new Notification("Sucesso",
+						"Mesa atualizada com sucesso",
+						Notification.TYPE_HUMANIZED_MESSAGE);
+				notification.setDelayMsec(SUCCESS_NOTIFICATION_DISMISS_TIME);
+			} else {
+				notification = new Notification("Erro ao atualizar mesa",
+						"Erro desconhecido", Notification.TYPE_ERROR_MESSAGE);
+				notification.setDelayMsec(FAILURE_NOTIFICATION_DISMISS_TIME);
+			}
+
+		} catch (Exception e) {
+			notification = new Notification("Erro ao atualizar mesa",
+					"Erro desconhecido", Notification.TYPE_ERROR_MESSAGE);
+			e.printStackTrace();
+		}
+
+		return notification;
+	}
+
 
 }

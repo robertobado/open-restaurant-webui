@@ -24,9 +24,13 @@ public class ConsumptionIdentifierContent extends TabSheet implements SelectedTa
 	private static final ThemeResource listIcon = new ThemeResource(
 			"images/list.png");
 	private static final ThemeResource addIcon = new ThemeResource(
-			"images/list.png");
+			"images/add.png");
+	
+	private static final ThemeResource editIcon = new ThemeResource(
+			"images/edit.png");
 
 	private Panel addPanel;
+	private Panel editPanel;
 	private Panel listPanel;
 	
 	private Table listTable;
@@ -36,6 +40,10 @@ public class ConsumptionIdentifierContent extends TabSheet implements SelectedTa
 	private TextArea newEntityIdentifier;
 	private TextArea newEntityDescription;
 	
+	private TextArea editEntityIdentifier;
+	private TextArea editEntityDescription;
+	private ConsumptionIdentifier editInstance;
+	
 	public ConsumptionIdentifierContent(SessionStorage sessionStorage){
 		consumptionIdentifierManager = new ConsumptionIdentifierManager(sessionStorage);
 		
@@ -43,7 +51,6 @@ public class ConsumptionIdentifierContent extends TabSheet implements SelectedTa
 		initializeAddTab();
 		
 		setSizeFull();
-		addListener(this);
 	}
 	
 	private void initializeListTab(){		
@@ -106,6 +113,51 @@ public class ConsumptionIdentifierContent extends TabSheet implements SelectedTa
 		
 		addPanel.addComponent(grid);
 	}	
+	
+	private void initializeEditTab(){
+		if(null == editPanel){
+			editPanel = new Panel();
+		}
+		else{
+			editPanel.removeAllComponents();
+		}
+		
+		addTab(editPanel, "Editar", editIcon);
+		
+		GridLayout grid = new GridLayout(2, 3);
+		
+		Label identifierLabel = new Label("Identificador: ");
+		grid.addComponent(identifierLabel, 0, 0);
+		grid.setComponentAlignment(identifierLabel, Alignment.MIDDLE_RIGHT);
+		
+		editEntityIdentifier = new TextArea();
+		editEntityIdentifier.setRows(1);
+		editEntityIdentifier.setValue(editInstance.getIdentifier());
+		grid.addComponent(editEntityIdentifier, 1, 0);
+		grid.setComponentAlignment(editEntityIdentifier, Alignment.MIDDLE_LEFT);
+		
+		Label descriptionLabel = new Label("Descrição: ");
+		grid.addComponent(descriptionLabel, 0, 1);
+		grid.setComponentAlignment(descriptionLabel, Alignment.MIDDLE_RIGHT);
+		
+		editEntityDescription = new TextArea();
+		editEntityDescription.setValue(editInstance.getDescription());
+		grid.addComponent(editEntityDescription, 1, 1);
+		grid.setComponentAlignment(editEntityDescription, Alignment.MIDDLE_LEFT);
+		
+		Button submitButton = new Button("Salvar");
+		
+		submitButton.addListener(Button.ClickEvent.class, this, "saveEditEntityButtonClickListener");
+		
+		grid.addComponent(submitButton, 0, 2, 1, 2);
+		grid.setComponentAlignment(submitButton, Alignment.MIDDLE_CENTER);
+		
+		grid.setWidth("400px");
+		
+		editPanel.addComponent(grid);
+		setSelectedTab(editPanel);
+		
+	}
 
 	public void selectedTabChange(SelectedTabChangeEvent event) {
 		TabSheet tabsheet = event.getTabSheet();
@@ -119,8 +171,8 @@ public class ConsumptionIdentifierContent extends TabSheet implements SelectedTa
 		private static final long serialVersionUID = -6500155514004773112L;
 
 		public void buttonClick(ClickEvent event) {
-			ConsumptionIdentifier consumptionIdentifier = (ConsumptionIdentifier) ((Button) event.getComponent()).getData();
-			getWindow().showNotification("Botão editar clicado! Item " + consumptionIdentifier.getConsumptionIdentifierId());
+			editInstance = (ConsumptionIdentifier) ((Button) event.getComponent()).getData();
+			initializeEditTab();
 		}
 	}
 	
@@ -143,6 +195,19 @@ public class ConsumptionIdentifierContent extends TabSheet implements SelectedTa
 		Notification notification = consumptionIdentifierManager.createEntity(consumptionIdentifier);
 		getWindow().showNotification(notification);
 		refreshEntityList();
+	}
+	
+	public void saveEditEntityButtonClickListener(Button.ClickEvent event){
+		editInstance.setIdentifier((String) editEntityIdentifier.getValue());
+		editInstance.setDescription((String) editEntityDescription.getValue());
+		Notification notification = consumptionIdentifierManager.updateEntity(editInstance);
+		getWindow().showNotification(notification);
+		
+		if(notification.getDelayMsec() > 0){
+			refreshEntityList();
+			removeTab(getTab(editPanel));
+			setSelectedTab(listPanel);
+		}
 	}
 
 }

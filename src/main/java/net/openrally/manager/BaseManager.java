@@ -16,6 +16,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
@@ -85,6 +86,18 @@ public class BaseManager extends CustomComponent{
 	
 	protected HttpDelete generateBasicHttpDelete(String path) {
 		HttpDelete request = new HttpDelete(getCoreBaseAddress() + SLASH
+				+ path);
+
+		addAcceptTypeAndContentTypeJson(request);
+
+		addAuthorizationHeader(request);
+
+		return request;
+	}
+	
+
+	protected HttpPut generateBasicHttpPut(String path) {
+		HttpPut request = new HttpPut(getCoreBaseAddress() + SLASH
 				+ path);
 
 		addAcceptTypeAndContentTypeJson(request);
