@@ -26,18 +26,13 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window.Notification;
 
-public class ConsumptionIdentifierManager extends BaseManager {
+public class ConsumptionIdentifierManager extends BaseEntityManager {
 
 	private static final int FAILURE_NOTIFICATION_DISMISS_TIME = -1;
 
 	private static final int SUCCESS_NOTIFICATION_DISMISS_TIME = 3000;
 
 	private static final long serialVersionUID = 4070524836393555115L;
-
-	private static final ThemeResource editIcon = new ThemeResource(
-			"images/edit.png");
-	private static final ThemeResource deleteIcon = new ThemeResource(
-			"images/delete.png");
 
 	public static final String PATH = "consumption-identifier";
 

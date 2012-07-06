@@ -17,7 +17,7 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.Window.Notification;
 
-public class ConsumptionIdentifierContent extends TabSheet implements SelectedTabChangeListener{
+public class ConsumptionIdentifierContent extends CRUDContent implements SelectedTabChangeListener{
 
 	private static final long serialVersionUID = -3112286751475588679L;
 	
