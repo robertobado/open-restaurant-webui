@@ -1,8 +1,6 @@
 package net.openrally.content;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import net.openrally.MainApplication;
 import net.openrally.SessionStorage;
@@ -10,7 +8,6 @@ import net.openrally.component.ReCaptcha;
 import net.openrally.entity.NewCompany;
 import net.openrally.manager.CompanyManager;
 
-import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Alignment;

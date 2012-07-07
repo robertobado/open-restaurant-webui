@@ -1,8 +1,14 @@
 package net.openrally.entity;
 
-public class ConsumptionIdentifier {
+import net.openrally.annotations.EntityId;
+import net.openrally.annotations.Hidden;
+
+public class ConsumptionIdentifier extends Entity{
 	
+	@EntityId
+	@Hidden
 	private Long consumptionIdentifierId; 
+	
 	private String identifier;
 	private String description;
 	

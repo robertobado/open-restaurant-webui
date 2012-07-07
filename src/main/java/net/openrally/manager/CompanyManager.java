@@ -2,7 +2,6 @@ package net.openrally.manager;
 
 import java.io.IOException;
 
-import net.openrally.MainApplication;
 import net.openrally.SessionStorage;
 import net.openrally.entity.NewCompany;
 import net.openrally.util.StringUtilities;

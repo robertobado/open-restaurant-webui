@@ -3,7 +3,6 @@ package net.openrally.composite;
 import net.openrally.MainApplication;
 import net.openrally.SessionStorage;
 import net.openrally.content.ConsumptionIdentifierContent;
-import net.openrally.content.ProductContent;
 
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Component;
@@ -22,9 +21,6 @@ public class HeaderLoggedTabBar extends TabSheet implements SelectedTabChangeLis
 
 	private static final ThemeResource productIcon = new ThemeResource(
 			"images/product.png");
-
-	private static final ThemeResource userIcon = new ThemeResource(
-			"images/user.png");
 
 	private HorizontalLayout mainArea;
 
@@ -54,8 +50,7 @@ public class HeaderLoggedTabBar extends TabSheet implements SelectedTabChangeLis
 					sessionStorage));
 		} else if (tabPosition == 1) {
 			Label label = new Label("Produtos");
-			mainArea.addComponent(new ProductContent(
-					sessionStorage));
+			mainArea.addComponent(label);
 		}
 	}
 }
