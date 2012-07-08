@@ -32,6 +32,8 @@ public class HeaderBar extends HorizontalLayout {
 	private Button logoutButton;
 
 	private Label spacer;
+	
+	private HorizontalLayout mainArea;
 
 	public HeaderBar(HorizontalLayout mainArea) {
 		setStyleName("headerBar");
@@ -69,6 +71,8 @@ public class HeaderBar extends HorizontalLayout {
 		logoutButton.setIcon(logoutIcon);
 		logoutButton.setWidth("100px");
 		logoutButton.addListener(new LogoutButtonListener());
+		
+		this.mainArea = mainArea;
 
 	}
 	
@@ -85,6 +89,10 @@ public class HeaderBar extends HorizontalLayout {
 	}
 	
 	public void adjustAfterLogout(){
+		SessionStorage sessionStorage = ((MainApplication) getApplication())
+				.getSessionStorage();
+		sessionStorage.purge();
+		
 		removeComponent(loggedTabSheet);
 		removeComponent(logoutButton);
 		
@@ -94,6 +102,8 @@ public class HeaderBar extends HorizontalLayout {
 		addComponent(loginButton);
 		setExpandRatio(loginButton, 0);
 		setComponentAlignment(loginButton, Alignment.MIDDLE_CENTER);
+		
+		mainArea.removeAllComponents();
 	}
 
 	private class LoginButtonListener implements Button.ClickListener {

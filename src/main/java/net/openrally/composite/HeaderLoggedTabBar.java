@@ -3,11 +3,11 @@ package net.openrally.composite;
 import net.openrally.MainApplication;
 import net.openrally.SessionStorage;
 import net.openrally.content.ConsumptionIdentifierContent;
+import net.openrally.content.ProductContent;
 
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
@@ -49,8 +49,8 @@ public class HeaderLoggedTabBar extends TabSheet implements SelectedTabChangeLis
 			mainArea.addComponent(new ConsumptionIdentifierContent(
 					sessionStorage));
 		} else if (tabPosition == 1) {
-			Label label = new Label("Produtos");
-			mainArea.addComponent(label);
+			mainArea.addComponent(new ProductContent(
+					sessionStorage));
 		}
 	}
 }

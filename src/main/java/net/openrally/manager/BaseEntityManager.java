@@ -183,7 +183,7 @@ public abstract class BaseEntityManager extends BaseManager {
 					notification.setDelayMsec(FAILURE_NOTIFICATION_DISMISS_TIME);
 				} else {
 					notification = new Notification("Erro ao remover entidade",
-							"Erro desconhecido. Status: " + response.getStatusLine()
+							"Erro desconhecido."
 							.getStatusCode(), Notification.TYPE_ERROR_MESSAGE);
 					notification.setDelayMsec(FAILURE_NOTIFICATION_DISMISS_TIME);
 				}
@@ -249,7 +249,7 @@ public abstract class BaseEntityManager extends BaseManager {
 				notification.setDelayMsec(SUCCESS_NOTIFICATION_DISMISS_TIME);
 			} else {
 				notification = new Notification("Erro ao atualizar entidade",
-						"Erro desconhecido", Notification.TYPE_ERROR_MESSAGE);
+						"Erro desconhecido.", Notification.TYPE_ERROR_MESSAGE);
 				notification.setDelayMsec(FAILURE_NOTIFICATION_DISMISS_TIME);
 			}
 

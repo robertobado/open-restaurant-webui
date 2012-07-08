@@ -25,4 +25,8 @@ public class SessionStorage {
 	public void setSessionValue(String sessionKey, Object sessionValue){
 		sessionMap.put(sessionKey, sessionValue);
 	}
+	
+	public void purge(){
+		sessionMap = new HashMap<String, Object>();
+	}
 }
