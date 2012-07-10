@@ -33,4 +33,6 @@ public class ProductManager extends BaseEntityManager{
 	protected Type getEntityListClass() {
 		return new TypeToken<List<Product>>() {}.getType();
 	}
+
+	
 }

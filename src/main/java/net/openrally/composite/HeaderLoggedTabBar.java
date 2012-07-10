@@ -2,6 +2,7 @@ package net.openrally.composite;
 
 import net.openrally.MainApplication;
 import net.openrally.SessionStorage;
+import net.openrally.content.BillContent;
 import net.openrally.content.ConsumptionIdentifierContent;
 import net.openrally.content.ProductContent;
 
@@ -21,14 +22,19 @@ public class HeaderLoggedTabBar extends TabSheet implements SelectedTabChangeLis
 
 	private static final ThemeResource productIcon = new ThemeResource(
 			"images/product.png");
+	
+	private static final ThemeResource billIcon = new ThemeResource(
+			"images/bill16.png");
+
 
 	private HorizontalLayout mainArea;
 
 	public HeaderLoggedTabBar(HorizontalLayout mainArea) {
 		addTab(new Panel(), "Mesas", tableIcon);
 		addTab(new Panel(), "Produtos", productIcon);
+		addTab(new Panel(), "Contas", billIcon);
 		setHeight("34px");
-		setWidth("168px");
+		setWidth("240px");
 		setStyleName("headerBarTab");
 		addListener(this);
 
@@ -50,6 +56,10 @@ public class HeaderLoggedTabBar extends TabSheet implements SelectedTabChangeLis
 					sessionStorage));
 		} else if (tabPosition == 1) {
 			mainArea.addComponent(new ProductContent(
+					sessionStorage));
+		}
+		else if (tabPosition == 2) {
+			mainArea.addComponent(new BillContent(
 					sessionStorage));
 		}
 	}

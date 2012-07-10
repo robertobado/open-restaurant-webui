@@ -72,7 +72,7 @@ public class LoginModal extends Window implements Button.ClickListener{
 		layout.setComponentAlignment(passwordLabel, Alignment.TOP_RIGHT);
 		
 		passwordField = new PasswordField();
-		passwordField.setValue("FRdBUhsBRl");
+		passwordField.setValue("THoLvXOzIR");
 		layout.addComponent(passwordField, 1, 3);
 		layout.setComponentAlignment(passwordField, Alignment.TOP_LEFT);
 		

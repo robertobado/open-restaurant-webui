@@ -3,8 +3,10 @@ package net.openrally.manager;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import net.openrally.SessionStorage;
 import net.openrally.annotations.EntityId;
@@ -32,9 +34,9 @@ public abstract class BaseEntityManager extends BaseManager {
 
 	private static final long serialVersionUID = 4513193088185985238L;
 	
-	private static final int FAILURE_NOTIFICATION_DISMISS_TIME = -1;
+	protected static final int FAILURE_NOTIFICATION_DISMISS_TIME = -1;
 
-	private static final int SUCCESS_NOTIFICATION_DISMISS_TIME = 3000;
+	protected static final int SUCCESS_NOTIFICATION_DISMISS_TIME = 3000;
 	
 	protected static final ThemeResource editIcon = new ThemeResource(
 			"images/edit.png");
@@ -90,6 +92,7 @@ public abstract class BaseEntityManager extends BaseManager {
 				item = container.addItem((Long) idField.get(entityInstance));
 			} catch (Exception e) {
 				e.printStackTrace();
+				continue;
 			} 
 			
 			for(Field entityField : entityFields){
@@ -130,8 +133,17 @@ public abstract class BaseEntityManager extends BaseManager {
 	
 	protected abstract Class<? extends Entity> getEntityClass();
 
-	protected List<? extends Entity> getEntityInsanceList() {
+	protected List<? extends Entity> getEntityInsanceList(String queryParams){
+		HttpGet httpGet = generateBasicHttpGet(getPath() + "?" + queryParams);
+		return getEntityInsanceList(httpGet);
+	}
+	
+	public List<? extends Entity> getEntityInsanceList() {
 		HttpGet httpGet = generateBasicHttpGet(getPath());
+		return getEntityInsanceList(httpGet);
+	}
+	
+	protected List<? extends Entity> getEntityInsanceList(HttpGet httpGet) {
 		try {
 			HttpResponse response = getHttpClient().execute(httpGet);
 			String responseBody = StringUtilities
@@ -183,8 +195,7 @@ public abstract class BaseEntityManager extends BaseManager {
 					notification.setDelayMsec(FAILURE_NOTIFICATION_DISMISS_TIME);
 				} else {
 					notification = new Notification("Erro ao remover entidade",
-							"Erro desconhecido."
-							.getStatusCode(), Notification.TYPE_ERROR_MESSAGE);
+							"Erro desconhecido.", Notification.TYPE_ERROR_MESSAGE);
 					notification.setDelayMsec(FAILURE_NOTIFICATION_DISMISS_TIME);
 				}
 			} catch (ClientProtocolException e) {
@@ -260,6 +271,18 @@ public abstract class BaseEntityManager extends BaseManager {
 		}
 
 		return notification;
+	}
+	
+	public Map<Long, ? extends Entity> getEntityMap() {
+		List<? extends Entity> entityList = getEntityInsanceList();
+		
+		Map<Long, Entity> entityMap = new HashMap<Long, Entity>();
+		
+		for(Entity entity : entityList){
+			entityMap.put(entity.getId(), entity);
+		}
+		
+		return entityMap;
 	}
 
 }
