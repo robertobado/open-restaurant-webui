@@ -89,7 +89,8 @@
           <stopKey>restaurant-webui</stopKey>
           <!-- Redeploy every x seconds if changes are detected, 0 for no automatic redeployment -->
           <scanIntervalSeconds>0</scanIntervalSeconds>
-          <!-- make sure Jetty also finds the widgetset -->
+          <!-- make sure Jetty also finds the widgetset -->       
+          
           <webAppConfig>
             <contextPath>/restaurant-webui</contextPath>
             <baseResource implementation="org.mortbay.resource.ResourceCollection">
@@ -97,6 +98,7 @@
               <!-- <resources>src/main/webapp,${project.build.directory}/${project.build.finalName}</resources> -->
               <resourcesAsCSV>src/main/webapp,${project.build.directory}/${project.build.finalName}</resourcesAsCSV>
             </baseResource>
+            <extraClasspath>${basedir}/</extraClasspath>
           </webAppConfig>
         </configuration>
       </plugin>

@@ -16,7 +16,7 @@ public class CompanyManager extends BaseManager {
 	
 	private static final long serialVersionUID = 7017437307034514645L;
 
-	private static final String PATH = "/company";
+	private static final String PATH = "company";
 	
 	private Gson gson;
 	

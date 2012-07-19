@@ -1,13 +1,10 @@
 package net.openrally.manager;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
-
 import javax.ws.rs.core.MediaType;
 
 import net.openrally.SessionStorage;
 import net.openrally.entity.User;
+import net.openrally.util.Configuration;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
@@ -33,7 +30,6 @@ public class BaseManager extends CustomComponent{
 	public static final String SESSION_USER_KEY = "session.user";
 	public static final String SLASH = "/";
 
-	private static Properties properties;
 	protected static Gson gson = new Gson();
 	private SessionStorage sessionStorage;
 
@@ -41,57 +37,30 @@ public class BaseManager extends CustomComponent{
 		this.sessionStorage = sessionStorage;
 	}
 
-	public static Properties getProperties() {
-
-		if (null == properties) {
-			properties = new Properties();
-			try {
-				properties.load(new FileInputStream("default.properties"));
-			} catch (IOException e) {
-			}
-		}
-
-		return properties;
-	}
-
-	public static String getProperty(String property) {
-		return getProperties().getProperty(property);
-	}
-
 	public static String getCoreBaseAddress() {
-		// return getProperty(CORE_BASE_ADDRESS_PROPERTY_NAME);
-		return "http://localhost:8181";
+		return Configuration.getPropertyAsString(Configuration.RESTAURANT_CORE_BASE_ADDRESS);
 	}
 
 	protected HttpPost generateBasicHttpPost(String path) {
 		HttpPost request = new HttpPost(getCoreBaseAddress() + SLASH + path);
-
 		addAcceptTypeAndContentTypeJson(request);
-
 		addAuthorizationHeader(request);
-
 		return request;
 	}
 	
 	protected HttpGet generateBasicHttpGet(String path) {
 		HttpGet request = new HttpGet(getCoreBaseAddress() + SLASH
 				+ path);
-
 		addAcceptTypeAndContentTypeJson(request);
-
 		addAuthorizationHeader(request);
-
 		return request;
 	}
 	
 	protected HttpDelete generateBasicHttpDelete(String path) {
 		HttpDelete request = new HttpDelete(getCoreBaseAddress() + SLASH
 				+ path);
-
 		addAcceptTypeAndContentTypeJson(request);
-
 		addAuthorizationHeader(request);
-
 		return request;
 	}
 	
@@ -99,11 +68,8 @@ public class BaseManager extends CustomComponent{
 	protected HttpPut generateBasicHttpPut(String path) {
 		HttpPut request = new HttpPut(getCoreBaseAddress() + SLASH
 				+ path);
-
 		addAcceptTypeAndContentTypeJson(request);
-
 		addAuthorizationHeader(request);
-
 		return request;
 	}
 	

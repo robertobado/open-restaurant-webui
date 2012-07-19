@@ -19,14 +19,14 @@ public class MainApplication extends Application {
 	private HeaderBar headerBar;
 	private HorizontalLayout mainArea;
 	private FooterBar footerBar;
-	
+
 	private SessionStorage sessionStorage;
 
 	@Override
 	public void init() {
 		
 		sessionStorage = new SessionStorage();
-		
+
 		window = new Window("Open Restaurant WebUI");
 		setMainWindow(window);
 
@@ -58,16 +58,17 @@ public class MainApplication extends Application {
 		WebBrowser webBrowser = ((WebApplicationContext) getContext())
 				.getBrowser();
 		String userIpAddress = webBrowser.getAddress();
-		
-		sessionStorage.setSessionValue(SessionStorage.USER_IP_ADDRESS, userIpAddress);
-		
+
+		sessionStorage.setSessionValue(SessionStorage.USER_IP_ADDRESS,
+				userIpAddress);
+
 	}
-	
-	public SessionStorage getSessionStorage(){
+
+	public SessionStorage getSessionStorage() {
 		return sessionStorage;
 	}
-	
-	public void adjustAfterLogin(){
+
+	public void adjustAfterLogin() {
 		headerBar.adjustAfterLogin();
 	}
 
