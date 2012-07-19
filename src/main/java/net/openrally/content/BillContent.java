@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -24,6 +23,7 @@ import net.openrally.manager.TaxManager;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -35,6 +35,7 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 
 public class BillContent extends TabSheet {
@@ -183,6 +184,7 @@ public class BillContent extends TabSheet {
 		openBillsListTable.setColumnHeader("total", "Total");
 		openBillsListTable.setColumnHeader("openTimestamp", "Abertura");
 		openBillsListTable.setColumnHeader("closeButton", "Fechar");
+		openBillsListTable.setColumnHeader("printButton", "Imprimir");
 
 		openBillsListTable.setSizeFull();
 
@@ -402,6 +404,8 @@ public class BillContent extends TabSheet {
 		container.addContainerProperty("total", String.class, null);
 		container.addContainerProperty("openTimestamp", String.class, null);
 		container.addContainerProperty("closeButton", Button.class, null);
+		container.addContainerProperty("printButton", Button.class, null);
+		
 
 		for (Bill bill : openBillList) {
 			Item item = null;
@@ -439,6 +443,12 @@ public class BillContent extends TabSheet {
 			closeButton.addListener(Button.ClickEvent.class, this,
 					"closeBillEventListener");
 			item.getItemProperty("closeButton").setValue(closeButton);
+			
+			Button printButton = new Button("Imprimir");
+			printButton.setData(bill);
+			printButton.addListener(Button.ClickEvent.class, this,
+					"printBillEventListener");
+			item.getItemProperty("printButton").setValue(printButton);
 
 		}
 
@@ -723,6 +733,35 @@ public class BillContent extends TabSheet {
 			refreshOpenBillItemsList();
 			refreshClosedBillsList();
 		}
+	}
+	
+	public void printBillEventListener(ClickEvent event) {
+		
+		// Create a window that contains what you want to print
+        Window window = new Window("Window to Print");
+
+        // Have some content to print
+        window.addComponent(new Label(
+                "<h1>Here's some dynamic content</h1>\n" +
+                "<p>This is to be printed to the printer.</p>",
+                Label.CONTENT_XHTML));
+
+        // Add the printing window as a new application-level
+        // window
+        getApplication().addWindow(window);
+
+        // Open it as a popup window with no decorations
+        getWindow().open(new ExternalResource(window.getURL()),
+                "_blank", 500, 200,  // Width and height 
+                Window.BORDER_NONE); // No decorations
+
+        // Print automatically when the window opens.
+        // This call will block until the print dialog exits!
+        window.executeJavaScript("print();");
+
+        // Close the window automatically after printing
+        window.executeJavaScript("self.close();");
+    
 	}
 
 	public void reopenBillClickListener(ClickEvent event) {
