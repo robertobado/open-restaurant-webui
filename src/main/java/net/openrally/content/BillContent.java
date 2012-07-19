@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -12,11 +13,13 @@ import net.openrally.entity.Bill;
 import net.openrally.entity.BillItem;
 import net.openrally.entity.ConsumptionIdentifier;
 import net.openrally.entity.Product;
+import net.openrally.entity.Tax;
 import net.openrally.manager.BillItemManager;
 import net.openrally.manager.BillManager;
 import net.openrally.manager.BillManager.Status;
 import net.openrally.manager.ConsumptionIdentifierManager;
 import net.openrally.manager.ProductManager;
+import net.openrally.manager.TaxManager;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -56,6 +59,7 @@ public class BillContent extends TabSheet {
 
 	private BillManager billManager;
 	private ProductManager productManager;
+	private TaxManager taxManager;
 	private ConsumptionIdentifierManager consumptionIdentifierManager;
 	private BillItemManager billItemManager;
 
@@ -67,6 +71,7 @@ public class BillContent extends TabSheet {
 		setSizeFull();
 		billManager = new BillManager(sessionStorage);
 		productManager = new ProductManager(sessionStorage);
+		taxManager = new TaxManager(sessionStorage);
 		consumptionIdentifierManager = new ConsumptionIdentifierManager(
 				sessionStorage);
 		billItemManager = new BillItemManager(sessionStorage);
@@ -109,7 +114,7 @@ public class BillContent extends TabSheet {
 		closedBillsListTable.setColumnHeader("consumptionIdentifier", "Mesa");
 		closedBillsListTable.setColumnHeader("total", "Total");
 		closedBillsListTable.setColumnHeader("openTimestamp", "Abertura");
-		closedBillsListTable.setColumnHeader("closeTimestamp", "Abertura");
+		closedBillsListTable.setColumnHeader("closeTimestamp", "Fechamento");
 		closedBillsListTable.setColumnHeader("reopenButton", "Reabrir");
 
 		closedBillsListTable.setSizeFull();
@@ -120,7 +125,7 @@ public class BillContent extends TabSheet {
 		closedBillsVerticalLayout.addComponent(closedBillsListTable);
 
 		refreshClosedBillsList();
-		
+
 		Label billItemsLabel = new Label("Detalhes da conta");
 		closedBillsVerticalLayout.addComponent(billItemsLabel);
 		closedBillsVerticalLayout.setComponentAlignment(billItemsLabel,
@@ -137,7 +142,8 @@ public class BillContent extends TabSheet {
 		closedBillItemsListTable.setColumnCollapsingAllowed(true);
 
 		closedBillItemsListTable.setColumnHeader("quantity", "Quantidade");
-		closedBillItemsListTable.setColumnHeader("product", "Produto");
+		closedBillItemsListTable.setColumnHeader("type", "Tipo");
+		closedBillItemsListTable.setColumnHeader("description", "Descricão");
 		closedBillItemsListTable.setColumnHeader("total", "Valor");
 		closedBillItemsListTable.setColumnHeader("remove", "Remover");
 
@@ -146,7 +152,8 @@ public class BillContent extends TabSheet {
 		refreshClosedBillItemsList();
 
 		closedBillsVerticalLayout.setExpandRatio(closedBillsListTable, 0.5f);
-		closedBillsVerticalLayout.setExpandRatio(closedBillItemsListTable, 0.5f);
+		closedBillsVerticalLayout
+				.setExpandRatio(closedBillItemsListTable, 0.5f);
 
 	}
 
@@ -202,7 +209,8 @@ public class BillContent extends TabSheet {
 		openBillItemsListTable.setColumnCollapsingAllowed(true);
 
 		openBillItemsListTable.setColumnHeader("quantity", "Quantidade");
-		openBillItemsListTable.setColumnHeader("product", "Produto");
+		openBillItemsListTable.setColumnHeader("type", "Tipo");
+		openBillItemsListTable.setColumnHeader("description", "Descrição");
 		openBillItemsListTable.setColumnHeader("total", "Valor");
 		openBillItemsListTable.setColumnHeader("remove", "Remover");
 
@@ -235,8 +243,8 @@ public class BillContent extends TabSheet {
 		Container billItemContainer = generateOpenBillItemContainer();
 		openBillItemsListTable.setContainerDataSource(billItemContainer);
 	}
-	
-	private void refreshClosedBillItemsList(){
+
+	private void refreshClosedBillItemsList() {
 		Container billItemContainer = generateClosedBillItemContainer();
 		closedBillItemsListTable.setContainerDataSource(billItemContainer);
 	}
@@ -419,8 +427,8 @@ public class BillContent extends TabSheet {
 			}
 
 			item.getItemProperty("total").setValue("R$ " + total);
-
-			Date date = new Date(bill.getOpenTimestamp());
+			
+			Date date = new Date(bill.getOpenTimestamp()*1000L);
 			DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 			format.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
 			String formatted = format.format(date);
@@ -444,7 +452,8 @@ public class BillContent extends TabSheet {
 		IndexedContainer container = new IndexedContainer();
 
 		container.addContainerProperty("quantity", Double.class, null);
-		container.addContainerProperty("product", String.class, null);
+		container.addContainerProperty("type", String.class, null);
+		container.addContainerProperty("description", String.class, null);
 		container.addContainerProperty("total", Double.class, null);
 		container.addContainerProperty("remove", Button.class, null);
 
@@ -456,6 +465,9 @@ public class BillContent extends TabSheet {
 					.getBillItemsForBill(billId);
 
 			Map<Long, Product> productMap = (Map<Long, Product>) productManager
+					.getEntityMap();
+			
+			Map<Long, Tax> taxMap = (Map<Long, Tax>) taxManager
 					.getEntityMap();
 
 			for (BillItem billItem : billItemList) {
@@ -469,10 +481,18 @@ public class BillContent extends TabSheet {
 
 				item.getItemProperty("quantity").setValue(
 						billItem.getQuantity());
-
-				Product product = productMap.get(billItem.getProductId());
-
-				item.getItemProperty("product").setValue(product.getName());
+				
+				if(BillItemManager.ItemType.PRODUCT.toString().equals(billItem.getType())){
+					item.getItemProperty("type").setValue(
+							"Produto");
+					Product product = productMap.get(billItem.getReferenceId());
+					item.getItemProperty("description").setValue(product.getName());
+				}else if(BillItemManager.ItemType.TAX.toString().equals(billItem.getType())){
+					item.getItemProperty("type").setValue(
+							"Taxa");
+					Tax tax = taxMap.get(billItem.getReferenceId());
+					item.getItemProperty("description").setValue(tax.getName());
+				}
 
 				item.getItemProperty("total").setValue(
 						billItem.getUnitPrice() * billItem.getQuantity());
@@ -488,13 +508,14 @@ public class BillContent extends TabSheet {
 
 		return container;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private Container generateClosedBillItemContainer() {
 		IndexedContainer container = new IndexedContainer();
 
 		container.addContainerProperty("quantity", Double.class, null);
-		container.addContainerProperty("product", String.class, null);
+		container.addContainerProperty("type", String.class, null);
+		container.addContainerProperty("description", String.class, null);
 		container.addContainerProperty("total", Double.class, null);
 
 		Long billId = (Long) closedBillsListTable.getValue();
@@ -505,6 +526,8 @@ public class BillContent extends TabSheet {
 					.getBillItemsForBill(billId);
 
 			Map<Long, Product> productMap = (Map<Long, Product>) productManager
+					.getEntityMap();
+			Map<Long, Tax> taxMap = (Map<Long, Tax>) taxManager
 					.getEntityMap();
 
 			for (BillItem billItem : billItemList) {
@@ -519,9 +542,17 @@ public class BillContent extends TabSheet {
 				item.getItemProperty("quantity").setValue(
 						billItem.getQuantity());
 
-				Product product = productMap.get(billItem.getProductId());
-
-				item.getItemProperty("product").setValue(product.getName());
+				if(BillItemManager.ItemType.PRODUCT.equals(billItem.getType())){
+					item.getItemProperty("type").setValue(
+							"Produto");
+					Product product = productMap.get(billItem.getReferenceId());
+					item.getItemProperty("description").setValue(product.getName());
+				}else if(BillItemManager.ItemType.TAX.equals(billItem.getType())){
+					item.getItemProperty("type").setValue(
+							"Taxa");
+					Tax tax = taxMap.get(billItem.getReferenceId());
+					item.getItemProperty("description").setValue(tax.getName());
+				}
 
 				item.getItemProperty("total").setValue(
 						billItem.getUnitPrice() * billItem.getQuantity());
@@ -541,13 +572,13 @@ public class BillContent extends TabSheet {
 		container.addContainerProperty("openTimestamp", String.class, null);
 		container.addContainerProperty("closeTimestamp", String.class, null);
 		container.addContainerProperty("reopenButton", Button.class, null);
-		
+
 		Map<Long, ConsumptionIdentifier> consumptionIdentifierMap = (Map<Long, ConsumptionIdentifier>) consumptionIdentifierManager
 				.getEntityMap();
-		
+
 		List<Bill> billList = billManager.getListBillsByStatus(Status.CLOSED);
-		
-		for(Bill bill : billList){
+
+		for (Bill bill : billList) {
 			Item item = null;
 			try {
 				item = container.addItem((Long) bill.getId());
@@ -555,39 +586,44 @@ public class BillContent extends TabSheet {
 				e.printStackTrace();
 				continue;
 			}
-			
-			ConsumptionIdentifier consumptionIdentifier = consumptionIdentifierMap.get(bill.getConsumptionIdentifierId());
-			item.getItemProperty("consumptionIdentifier").setValue(consumptionIdentifier.getIdentifier());
-			
-			List<BillItem> billItemList = billItemManager.getBillItemsForBill(bill.getBillId());
-			
+
+			ConsumptionIdentifier consumptionIdentifier = consumptionIdentifierMap
+					.get(bill.getConsumptionIdentifierId());
+			item.getItemProperty("consumptionIdentifier").setValue(
+					consumptionIdentifier.getIdentifier());
+
+			List<BillItem> billItemList = billItemManager
+					.getBillItemsForBill(bill.getBillId());
+
 			Double total = 0.0;
-			
-			for(BillItem billItem : billItemList){
+
+			for (BillItem billItem : billItemList) {
 				total += (billItem.getQuantity() * billItem.getUnitPrice());
 			}
-			
+
 			item.getItemProperty("total").setValue(total);
-			
-			Date date = new Date(bill.getOpenTimestamp());
+
+			Date date = new Date(bill.getOpenTimestamp()*1000L);
 			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			format.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
 			String formatted = format.format(date);
 			item.getItemProperty("openTimestamp").setValue(formatted);
-			
-			date = new Date(bill.getCloseTimestamp());
+
+			date = new Date(bill.getCloseTimestamp()*1000L);
 			format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			format.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
 			formatted = format.format(date);
 			item.getItemProperty("closeTimestamp").setValue(formatted);
-			
+
 			Button reopenButton = new Button("Reabrir");
 			reopenButton.setData(bill);
-			reopenButton.addListener(Button.ClickEvent.class, this, "reopenBillClickListener");
+			reopenButton.addListener(Button.ClickEvent.class, this,
+					"reopenBillClickListener");
 			item.getItemProperty("reopenButton").setValue(reopenButton);
 		}
-		
-		container.sort(new Object[] { "closeTimestamp" }, new boolean[] { true });
+
+		container.sort(new Object[] { "closeTimestamp" },
+				new boolean[] { true });
 
 		return container;
 	}
@@ -644,8 +680,8 @@ public class BillContent extends TabSheet {
 
 		refreshOpenBillItemsList();
 	}
-	
-	public void closedBillListSelectionChangeListener(Event event){
+
+	public void closedBillListSelectionChangeListener(Event event) {
 		refreshClosedBillItemsList();
 	}
 
@@ -658,7 +694,7 @@ public class BillContent extends TabSheet {
 		}
 
 		BillItem billItem = new BillItem();
-		billItem.setProductId(productId);
+		billItem.setReferenceId(productId);
 		billItem.setQuantity(1.0);
 		billItem.setBillId(billId);
 
@@ -688,8 +724,8 @@ public class BillContent extends TabSheet {
 			refreshClosedBillsList();
 		}
 	}
-	
-	public void reopenBillClickListener(ClickEvent event){
+
+	public void reopenBillClickListener(ClickEvent event) {
 		Bill bill = (Bill) ((Button) event.getComponent()).getData();
 		bill.setStatus(Status.OPEN.toString());
 

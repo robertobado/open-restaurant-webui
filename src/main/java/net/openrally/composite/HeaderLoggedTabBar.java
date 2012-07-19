@@ -5,6 +5,7 @@ import net.openrally.SessionStorage;
 import net.openrally.content.BillContent;
 import net.openrally.content.ConsumptionIdentifierContent;
 import net.openrally.content.ProductContent;
+import net.openrally.content.TaxContent;
 
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Component;
@@ -25,6 +26,9 @@ public class HeaderLoggedTabBar extends TabSheet implements SelectedTabChangeLis
 	
 	private static final ThemeResource billIcon = new ThemeResource(
 			"images/bill16.png");
+	
+	private static final ThemeResource taxIcon = new ThemeResource(
+			"images/tax16.png");
 
 
 	private HorizontalLayout mainArea;
@@ -33,8 +37,9 @@ public class HeaderLoggedTabBar extends TabSheet implements SelectedTabChangeLis
 		addTab(new Panel(), "Mesas", tableIcon);
 		addTab(new Panel(), "Produtos", productIcon);
 		addTab(new Panel(), "Contas", billIcon);
+		addTab(new Panel(), "Taxas", taxIcon);
 		setHeight("34px");
-		setWidth("240px");
+		setWidth("320px");
 		setStyleName("headerBarTab");
 		addListener(this);
 
@@ -60,6 +65,9 @@ public class HeaderLoggedTabBar extends TabSheet implements SelectedTabChangeLis
 		}
 		else if (tabPosition == 2) {
 			mainArea.addComponent(new BillContent(
+					sessionStorage));
+		} else if(tabPosition == 3){
+			mainArea.addComponent(new TaxContent(
 					sessionStorage));
 		}
 	}

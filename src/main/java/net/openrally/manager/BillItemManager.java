@@ -10,6 +10,21 @@ import net.openrally.entity.Entity;
 import com.google.gson.reflect.TypeToken;
 
 public class BillItemManager extends BaseEntityManager {
+	
+	public enum ItemType {
+	    PRODUCT("Product"),
+	    TAX("Tax");
+	    
+	    private String type;
+	    
+	    ItemType(String type){
+	    	this.type = type;
+	    }
+	    
+	    public String toString(){
+	    	return type;
+	    }
+	}
 
 	private static final long serialVersionUID = 7344149701655567987L;
 	private static final String PATH = "bill-item";

@@ -13,9 +13,11 @@ import net.openrally.manager.BaseEntityManager;
 import com.vaadin.data.Property.ConversionException;
 import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
@@ -44,8 +46,8 @@ public abstract class CRUDContent extends TabSheet {
 
 	protected BaseEntityManager manager;
 
-	private List<Entry<Field, TextField>> newEntityFieldList;
-	private List<Entry<Field, TextField>> editEntityFieldList;
+	private List<Entry<Field, AbstractField>> newEntityFieldList;
+	private List<Entry<Field, AbstractField>> editEntityFieldList;
 	
 	private Entity listEditInstance;
 
@@ -91,13 +93,13 @@ public abstract class CRUDContent extends TabSheet {
 		GridLayout grid = new GridLayout(2, newEntityFieldList.size() + 1);
 
 		int rownum = 0;
-		for (Entry<Field, TextField> entry : newEntityFieldList) {
+		for (Entry<Field, AbstractField> entry : newEntityFieldList) {
 			Field field = entry.getKey();
 
 			Label identifierLabel = new Label(field.getName());
 			grid.addComponent(identifierLabel, 0, rownum);
 
-			TextField inputField = entry.getValue();
+			AbstractField inputField = entry.getValue();
 			grid.addComponent(inputField, 1, rownum);
 
 			rownum++;
@@ -129,13 +131,13 @@ public abstract class CRUDContent extends TabSheet {
 		GridLayout grid = new GridLayout(2, editEntityFieldList.size() + 1);
 
 		int rownum = 0;
-		for (Entry<Field, TextField> entry : editEntityFieldList) {
+		for (Entry<Field, AbstractField> entry : editEntityFieldList) {
 			Field field = entry.getKey();
 
 			Label identifierLabel = new Label(field.getName());
 			grid.addComponent(identifierLabel, 0, rownum);
 
-			TextField inputField = entry.getValue();
+			AbstractField inputField = entry.getValue();
 			grid.addComponent(inputField, 1, rownum);
 
 			rownum++;
@@ -157,8 +159,8 @@ public abstract class CRUDContent extends TabSheet {
 	}
 
 	private void initializeFieldLists() {
-		newEntityFieldList = new LinkedList<Entry<Field, TextField>>();
-		editEntityFieldList = new LinkedList<Entry<Field, TextField>>();
+		newEntityFieldList = new LinkedList<Entry<Field, AbstractField>>();
+		editEntityFieldList = new LinkedList<Entry<Field, AbstractField>>();
 
 		Class<? extends Entity> entityClass = getEntityClass();
 
@@ -170,13 +172,27 @@ public abstract class CRUDContent extends TabSheet {
 			}
 
 			field.setAccessible(true);
+			
+			AbstractField newEntityField = null;
+			AbstractField editEntityField = null;
+			if(field.getType() == String.class || field.getType() == Double.class){
+				newEntityField = new TextField();
+				editEntityField = new TextField();
+			}
+			else if(field.getType() == Boolean.class){
+				newEntityField = new CheckBox();
+				editEntityField = new CheckBox();
+			}
+			else{
+				throw new RuntimeException(">>>>class>>>>" + field.getType().getName());
+			}
 
-			Entry<Field, TextField> newEntityFieldEntry = new SimpleEntry<Field, TextField>(
-					field, new TextField());
+			Entry<Field, AbstractField> newEntityFieldEntry = new SimpleEntry<Field, AbstractField>(
+					field, newEntityField);
 			newEntityFieldList.add(newEntityFieldEntry);
 
-			Entry<Field, TextField> editEntityFieldEntry = new SimpleEntry<Field, TextField>(
-					field, new TextField());
+			Entry<Field, AbstractField> editEntityFieldEntry = new SimpleEntry<Field, AbstractField>(
+					field, editEntityField);
 			editEntityFieldList.add(editEntityFieldEntry);
 
 		}
@@ -205,9 +221,9 @@ public abstract class CRUDContent extends TabSheet {
 		listEditInstance = (Entity) ((Button) event.getComponent())
 				.getData();
 
-		for (Entry<Field, TextField> entry : editEntityFieldList) {
+		for (Entry<Field, AbstractField> entry : editEntityFieldList) {
 			Field field = entry.getKey();
-			TextField inputField = entry.getValue();
+			AbstractField inputField = entry.getValue();
 
 			try {
 				inputField.setValue(field.get(listEditInstance).toString());
@@ -240,7 +256,7 @@ public abstract class CRUDContent extends TabSheet {
 		}
 	}
 
-	private Entity dynamicallyGenerateEntity(List<Entry<Field, TextField>> list) {
+	private Entity dynamicallyGenerateEntity(List<Entry<Field, AbstractField>> editEntityFieldList2) {
 		
 		Class<? extends Entity> entityClass = getEntityClass();
 
@@ -254,9 +270,9 @@ public abstract class CRUDContent extends TabSheet {
 			e.printStackTrace();
 		}
 
-		for (Entry<Field, TextField> entry : list) {
+		for (Entry<Field, AbstractField> entry : editEntityFieldList2) {
 			Field field = entry.getKey();
-			TextField inputField = entry.getValue();
+			AbstractField inputField = entry.getValue();
 
 			Object value = null;
 			if (field.getType() == String.class) {
@@ -265,9 +281,10 @@ public abstract class CRUDContent extends TabSheet {
 				value = Double.parseDouble((String) inputField.getValue());
 			} else if (field.getType() == Long.class) {
 				value = Long.parseLong((String) inputField.getValue());
-			} else if (field.getType() == Integer.class) {
-				value = Integer.parseInt((String) inputField.getValue());
-			} else {
+			} else if(field.getType() == Boolean.class){
+				value = inputField.getValue();
+			}
+			else {
 				throw new RuntimeException("Cannot convert type "
 						+ field.getType().getName() + " for field "
 						+ field.getName() + " while saving new entity");

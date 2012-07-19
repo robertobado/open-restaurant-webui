@@ -10,7 +10,8 @@ public class BillItem extends Entity {
 	private Long billItemId;
 	
 	private Long billId;
-	private Long productId;
+	private String type;
+	private Long referenceId;
 	private Double quantity;
 	private Double unitPrice;
 	
@@ -26,11 +27,17 @@ public class BillItem extends Entity {
 	public void setBillId(Long billId) {
 		this.billId = billId;
 	}
-	public Long getProductId() {
-		return productId;
+	public String getType() {
+		return type;
 	}
-	public void setProductId(Long productId) {
-		this.productId = productId;
+	public void setType(String type) {
+		this.type = type;
+	}
+	public Long getReferenceId() {
+		return referenceId;
+	}
+	public void setReferenceId(Long referenceId) {
+		this.referenceId = referenceId;
 	}
 	public Double getQuantity() {
 		return quantity;
