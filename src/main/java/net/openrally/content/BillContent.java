@@ -1,8 +1,12 @@
 package net.openrally.content;
 
+import java.io.StringWriter;
+import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
@@ -16,6 +20,7 @@ import net.openrally.entity.Tax;
 import net.openrally.manager.BillItemManager;
 import net.openrally.manager.BillManager;
 import net.openrally.manager.BillManager.Status;
+import net.openrally.manager.ConfigurationManager;
 import net.openrally.manager.ConsumptionIdentifierManager;
 import net.openrally.manager.ProductManager;
 import net.openrally.manager.TaxManager;
@@ -37,6 +42,9 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
+
+import freemarker.cache.StringTemplateLoader;
+import freemarker.template.Template;
 
 public class BillContent extends TabSheet {
 
@@ -63,6 +71,7 @@ public class BillContent extends TabSheet {
 	private TaxManager taxManager;
 	private ConsumptionIdentifierManager consumptionIdentifierManager;
 	private BillItemManager billItemManager;
+	private ConfigurationManager configurationManager;
 
 	private Button openBillButton;
 
@@ -76,6 +85,7 @@ public class BillContent extends TabSheet {
 		consumptionIdentifierManager = new ConsumptionIdentifierManager(
 				sessionStorage);
 		billItemManager = new BillItemManager(sessionStorage);
+		configurationManager = new ConfigurationManager(sessionStorage);
 
 		openAndManageHorizontalLayout = new HorizontalLayout();
 		openAndManageHorizontalLayout.setSizeFull();
@@ -405,7 +415,6 @@ public class BillContent extends TabSheet {
 		container.addContainerProperty("openTimestamp", String.class, null);
 		container.addContainerProperty("closeButton", Button.class, null);
 		container.addContainerProperty("printButton", Button.class, null);
-		
 
 		for (Bill bill : openBillList) {
 			Item item = null;
@@ -431,8 +440,8 @@ public class BillContent extends TabSheet {
 			}
 
 			item.getItemProperty("total").setValue("R$ " + total);
-			
-			Date date = new Date(bill.getOpenTimestamp()*1000L);
+
+			Date date = new Date(bill.getOpenTimestamp() * 1000L);
 			DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 			format.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
 			String formatted = format.format(date);
@@ -443,7 +452,7 @@ public class BillContent extends TabSheet {
 			closeButton.addListener(Button.ClickEvent.class, this,
 					"closeBillEventListener");
 			item.getItemProperty("closeButton").setValue(closeButton);
-			
+
 			Button printButton = new Button("Imprimir");
 			printButton.setData(bill);
 			printButton.addListener(Button.ClickEvent.class, this,
@@ -476,9 +485,8 @@ public class BillContent extends TabSheet {
 
 			Map<Long, Product> productMap = (Map<Long, Product>) productManager
 					.getEntityMap();
-			
-			Map<Long, Tax> taxMap = (Map<Long, Tax>) taxManager
-					.getEntityMap();
+
+			Map<Long, Tax> taxMap = (Map<Long, Tax>) taxManager.getEntityMap();
 
 			for (BillItem billItem : billItemList) {
 				Item item = null;
@@ -491,15 +499,16 @@ public class BillContent extends TabSheet {
 
 				item.getItemProperty("quantity").setValue(
 						billItem.getQuantity());
-				
-				if(BillItemManager.ItemType.PRODUCT.toString().equals(billItem.getType())){
-					item.getItemProperty("type").setValue(
-							"Produto");
+
+				if (BillItemManager.ItemType.PRODUCT.toString().equals(
+						billItem.getType())) {
+					item.getItemProperty("type").setValue("Produto");
 					Product product = productMap.get(billItem.getReferenceId());
-					item.getItemProperty("description").setValue(product.getName());
-				}else if(BillItemManager.ItemType.TAX.toString().equals(billItem.getType())){
-					item.getItemProperty("type").setValue(
-							"Taxa");
+					item.getItemProperty("description").setValue(
+							product.getName());
+				} else if (BillItemManager.ItemType.TAX.toString().equals(
+						billItem.getType())) {
+					item.getItemProperty("type").setValue("Taxa");
 					Tax tax = taxMap.get(billItem.getReferenceId());
 					item.getItemProperty("description").setValue(tax.getName());
 				}
@@ -537,8 +546,7 @@ public class BillContent extends TabSheet {
 
 			Map<Long, Product> productMap = (Map<Long, Product>) productManager
 					.getEntityMap();
-			Map<Long, Tax> taxMap = (Map<Long, Tax>) taxManager
-					.getEntityMap();
+			Map<Long, Tax> taxMap = (Map<Long, Tax>) taxManager.getEntityMap();
 
 			for (BillItem billItem : billItemList) {
 				Item item = null;
@@ -552,14 +560,14 @@ public class BillContent extends TabSheet {
 				item.getItemProperty("quantity").setValue(
 						billItem.getQuantity());
 
-				if(BillItemManager.ItemType.PRODUCT.equals(billItem.getType())){
-					item.getItemProperty("type").setValue(
-							"Produto");
+				if (BillItemManager.ItemType.PRODUCT.equals(billItem.getType())) {
+					item.getItemProperty("type").setValue("Produto");
 					Product product = productMap.get(billItem.getReferenceId());
-					item.getItemProperty("description").setValue(product.getName());
-				}else if(BillItemManager.ItemType.TAX.equals(billItem.getType())){
-					item.getItemProperty("type").setValue(
-							"Taxa");
+					item.getItemProperty("description").setValue(
+							product.getName());
+				} else if (BillItemManager.ItemType.TAX.equals(billItem
+						.getType())) {
+					item.getItemProperty("type").setValue("Taxa");
 					Tax tax = taxMap.get(billItem.getReferenceId());
 					item.getItemProperty("description").setValue(tax.getName());
 				}
@@ -613,13 +621,13 @@ public class BillContent extends TabSheet {
 
 			item.getItemProperty("total").setValue(total);
 
-			Date date = new Date(bill.getOpenTimestamp()*1000L);
+			Date date = new Date(bill.getOpenTimestamp() * 1000L);
 			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			format.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
 			String formatted = format.format(date);
 			item.getItemProperty("openTimestamp").setValue(formatted);
 
-			date = new Date(bill.getCloseTimestamp()*1000L);
+			date = new Date(bill.getCloseTimestamp() * 1000L);
 			format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			format.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
 			formatted = format.format(date);
@@ -734,34 +742,56 @@ public class BillContent extends TabSheet {
 			refreshClosedBillsList();
 		}
 	}
-	
+
 	public void printBillEventListener(ClickEvent event) {
 		
-		// Create a window that contains what you want to print
-        Window window = new Window("Window to Print");
+		Configuration configuration = configurationManager.getEntity();
 
-        // Have some content to print
-        window.addComponent(new Label(
-                "<h1>Here's some dynamic content</h1>\n" +
-                "<p>This is to be printed to the printer.</p>",
-                Label.CONTENT_XHTML));
+		Bill bill = (Bill) event.getButton().getData();
 
-        // Add the printing window as a new application-level
-        // window
-        getApplication().addWindow(window);
+		List<BillItem> billItems = billItemManager.getBillItemsForBill(bill
+				.getBillId());
+		billItems = summarizeBillItems(billItems);
 
-        // Open it as a popup window with no decorations
-        getWindow().open(new ExternalResource(window.getURL()),
-                "_blank", 500, 200,  // Width and height 
-                Window.BORDER_NONE); // No decorations
+		Map<String, Object> dataModel = new HashMap<String, Object>();
 
-        // Print automatically when the window opens.
-        // This call will block until the print dialog exits!
-        window.executeJavaScript("print();");
+		fillDataModelWithGeneralAttributes(dataModel, billItems, configuration.getCompanyName());
 
-        // Close the window automatically after printing
-        window.executeJavaScript("self.close();");
-    
+		fillDataModelWithProductsAttributes(dataModel, billItems);
+		
+		fillDataModelWithTaxesAttributes(dataModel, billItems);
+
+		try {
+			String billPrintHtml = processTemplate(dataModel, configuration.getBillTemplate());
+
+			// Create a window to hold bill html
+			Window window = new Window("Conta");
+
+			// Add content to new window
+			window.addComponent(new Label(billPrintHtml, Label.CONTENT_XHTML));
+
+			// Add the printing window as a new application-level
+			// window
+			getApplication().addWindow(window);
+
+			// Open it as a popup window with no decorations
+			getWindow().open(new ExternalResource(window.getURL()), "_blank",
+					500, 200, // Width and height
+					Window.BORDER_NONE); // No decorations
+
+			// Print automatically when the window opens.
+			// This call will block until the print dialog exits!
+			window.executeJavaScript("print();");
+		} catch (Exception e) {
+			e.printStackTrace();
+			Notification notification = new Notification(
+					"Erro ao criar imprimir conta",
+					"Verifique seu modelo de conta",
+					Notification.TYPE_ERROR_MESSAGE);
+			notification.setDelayMsec(-1);
+			getWindow().showNotification(notification);
+		}
+
 	}
 
 	public void reopenBillClickListener(ClickEvent event) {
@@ -793,6 +823,165 @@ public class BillContent extends TabSheet {
 			refreshOpenBillsList();
 			openBillsListTable.select(billItem.getBillId());
 		}
+	}
+
+	// Process a template using FreeMarker and print the results
+	private String processTemplate(Map<String, Object> dataModel,
+			String templateModel) throws Exception {
+
+		StringTemplateLoader stringTemplateLoader = new StringTemplateLoader();
+		String billPrintTemplate = "billPrintTemplate";
+		stringTemplateLoader.putTemplate(billPrintTemplate, templateModel);
+
+		freemarker.template.Configuration templateConfiguration = new freemarker.template.Configuration();
+		templateConfiguration.setTemplateLoader(stringTemplateLoader);
+		Template template = templateConfiguration
+				.getTemplate(billPrintTemplate);
+
+		Writer out = new StringWriter();
+		template.process(dataModel, out);
+		return out.toString();
+	}
+
+	private void fillDataModelWithGeneralAttributes(
+			Map<String, Object> dataModel, List<BillItem> billItems, String companyName) {
+		Date date = new Date();
+		DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+		format.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
+		String formatted = format.format(date);
+		dataModel.put("current_date", formatted);
+		
+		Double totalAmount = 0.0;
+		
+		for(BillItem billItem : billItems){
+			totalAmount += billItem.getQuantity() * billItem.getUnitPrice();
+		}
+		
+		dataModel.put("grand_total", totalAmount);
+		
+		dataModel.put("company_name", companyName);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void fillDataModelWithProductsAttributes(
+			Map<String, Object> dataModel, List<BillItem> summarizedBillItems) {
+
+		List<Map<String, Object>> products = new LinkedList<Map<String, Object>>();
+
+		Map<Long, Product> productMap = (Map<Long, Product>) productManager
+				.getEntityMap();
+
+		Double productsTotalPrice = 0.0;
+
+		for (BillItem summarizedBillItem : summarizedBillItems) {
+			if (!summarizedBillItem.getType().equals(
+					BillItemManager.ItemType.PRODUCT.toString())) {
+				continue;
+			}
+
+			Product product = productMap.get(summarizedBillItem
+					.getReferenceId());
+
+			Map<String, Object> productAttributes = new HashMap<String, Object>();
+			productAttributes.put("quantity", summarizedBillItem.getQuantity());
+
+			if (null != product) {
+				productAttributes.put("name", product.getName());
+				productAttributes.put("description", product.getDescription());
+			}
+
+			productAttributes.put("unit_price",
+					summarizedBillItem.getUnitPrice());
+
+			Double totalPrice = summarizedBillItem.getQuantity()
+					* summarizedBillItem.getUnitPrice();
+			productAttributes.put("total_price", totalPrice);
+
+			products.add(productAttributes);
+
+			productsTotalPrice += totalPrice;
+		}
+
+		dataModel.put("products", products);
+		dataModel.put("products_total_price", productsTotalPrice);
+
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void fillDataModelWithTaxesAttributes(
+			Map<String, Object> dataModel, List<BillItem> summarizedBillItems) {
+
+		List<Map<String, Object>> taxes = new LinkedList<Map<String, Object>>();
+
+		Map<Long, Tax> taxMap = (Map<Long, Tax>) taxManager
+				.getEntityMap();
+
+		Double taxesTotalPrice = 0.0;
+
+		for (BillItem summarizedBillItem : summarizedBillItems) {
+			if (!summarizedBillItem.getType().equals(
+					BillItemManager.ItemType.TAX.toString())) {
+				continue;
+			}
+
+			Tax tax = taxMap.get(summarizedBillItem
+					.getReferenceId());
+
+			Map<String, Object> taxAttributes = new HashMap<String, Object>();
+			taxAttributes.put("quantity", summarizedBillItem.getQuantity());
+
+			if (null != tax) {
+				taxAttributes.put("name", tax.getName());
+				taxAttributes.put("description", tax.getDescription());
+			}
+
+			taxAttributes.put("unit_price",
+					summarizedBillItem.getUnitPrice());
+
+			Double totalPrice = summarizedBillItem.getQuantity()
+					* summarizedBillItem.getUnitPrice();
+			taxAttributes.put("total_price", totalPrice);
+
+			taxes.add(taxAttributes);
+
+			taxesTotalPrice += totalPrice;
+		}
+
+		dataModel.put("taxes", taxes);
+		dataModel.put("taxes_total_price", taxesTotalPrice);
+
+	}
+
+	private List<BillItem> summarizeBillItems(List<BillItem> originalBillItems) {
+		List<BillItem> summarizedBillItems = new LinkedList<BillItem>();
+
+		for (BillItem originalBillItem : originalBillItems) {
+			Boolean found = false;
+
+			for (BillItem summarizedBillItem : summarizedBillItems) {
+
+				if (summarizedBillItem.getType().equals(
+						originalBillItem.getType())
+						&& summarizedBillItem.getReferenceId().equals(
+								originalBillItem.getReferenceId())
+						&& summarizedBillItem.getUnitPrice().equals(
+								originalBillItem.getUnitPrice())) {
+					found = true;
+					Double summarizedQuantity = summarizedBillItem
+							.getQuantity();
+					summarizedQuantity += originalBillItem.getQuantity();
+					summarizedBillItem.setQuantity(summarizedQuantity);
+				}
+
+			}
+
+			if (!found) {
+				BillItem summarizedBillItem = new BillItem(originalBillItem);
+				summarizedBillItems.add(summarizedBillItem);
+			}
+		}
+
+		return summarizedBillItems;
 	}
 
 }

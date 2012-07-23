@@ -4,7 +4,7 @@ import javax.ws.rs.core.MediaType;
 
 import net.openrally.SessionStorage;
 import net.openrally.entity.User;
-import net.openrally.util.Configuration;
+import net.openrally.util.SystemConfiguration;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
@@ -38,7 +38,7 @@ public class BaseManager extends CustomComponent{
 	}
 
 	public static String getCoreBaseAddress() {
-		return Configuration.getPropertyAsString(Configuration.RESTAURANT_CORE_BASE_ADDRESS);
+		return SystemConfiguration.getPropertyAsString(SystemConfiguration.RESTAURANT_CORE_BASE_ADDRESS);
 	}
 
 	protected HttpPost generateBasicHttpPost(String path) {

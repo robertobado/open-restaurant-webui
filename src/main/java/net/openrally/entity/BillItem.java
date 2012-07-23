@@ -15,6 +15,18 @@ public class BillItem extends Entity {
 	private Double quantity;
 	private Double unitPrice;
 	
+	public BillItem(BillItem originalBillItem) {
+		this.billItemId = originalBillItem.billItemId;
+		this.billId = originalBillItem.billId;
+		this.type = originalBillItem.type;
+		this.referenceId = originalBillItem.referenceId;
+		this.quantity = originalBillItem.quantity;
+		this.unitPrice = originalBillItem.unitPrice;
+	}
+	
+	public BillItem() {
+	}
+	
 	public Long getBillItemId() {
 		return billItemId;
 	}
