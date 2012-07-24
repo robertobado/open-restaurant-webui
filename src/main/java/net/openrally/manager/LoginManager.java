@@ -18,6 +18,7 @@ import org.apache.http.entity.StringEntity;
 
 public class LoginManager extends BaseManager {
 
+
 	private static final long serialVersionUID = 3941308840730651604L;
 	private static final String PATH = "login";
 
@@ -39,7 +40,7 @@ public class LoginManager extends BaseManager {
 		String requestBody = gson.toJson(loginRequestBody);
 
 		try {
-			httpPost.setEntity(new StringEntity(requestBody));
+			httpPost.setEntity(new StringEntity(requestBody, UTF_8));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}

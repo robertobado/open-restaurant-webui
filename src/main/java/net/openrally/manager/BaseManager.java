@@ -29,6 +29,7 @@ public class BaseManager extends CustomComponent{
 	public static final String CORE_BASE_ADDRESS_PROPERTY_NAME = "restaurant.core.address";
 	public static final String SESSION_USER_KEY = "session.user";
 	public static final String SLASH = "/";
+	public static final String UTF_8 = "UTF-8";
 
 	protected static Gson gson = new Gson();
 	private SessionStorage sessionStorage;

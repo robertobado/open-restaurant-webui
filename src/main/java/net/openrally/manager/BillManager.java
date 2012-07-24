@@ -97,7 +97,7 @@ public class BillManager extends BaseEntityManager {
 		Notification notification;
 
 		try {
-			httpPost.setEntity(new StringEntity(requestBody));
+			httpPost.setEntity(new StringEntity(requestBody, UTF_8));
 			HttpResponse response = getHttpClient().execute(httpPost);
 
 			if (HttpStatus.SC_CREATED == response.getStatusLine().getStatusCode()) {

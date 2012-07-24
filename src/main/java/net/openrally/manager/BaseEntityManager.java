@@ -212,13 +212,14 @@ public abstract class BaseEntityManager extends BaseManager {
 	}
 
 	public Notification createEntity(Entity entity) {
+		
 		String requestBody = gson.toJson(entity);
 
 		HttpPost httpPost = generateBasicHttpPost(getPath());
 
 		Notification notification;
 		try {
-			httpPost.setEntity(new StringEntity(requestBody));
+			httpPost.setEntity(new StringEntity(requestBody, UTF_8));
 			HttpResponse response = getHttpClient().execute(httpPost);
 
 			if (HttpStatus.SC_CREATED == response.getStatusLine()
@@ -249,7 +250,7 @@ public abstract class BaseEntityManager extends BaseManager {
 
 		Notification notification;
 		try {
-			httpPut.setEntity(new StringEntity(requestBody));
+			httpPut.setEntity(new StringEntity(requestBody, UTF_8));
 			HttpResponse response = getHttpClient().execute(httpPut);
 
 			if (HttpStatus.SC_OK == response.getStatusLine()

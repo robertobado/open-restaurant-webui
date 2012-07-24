@@ -184,7 +184,7 @@ public abstract class CRUDContent extends TabSheet {
 				editEntityField = new CheckBox();
 			}
 			else{
-				throw new RuntimeException(">>>>class>>>>" + field.getType().getName());
+				throw new RuntimeException("Cannot initializeFieldLists for unknown field type " + field.getType().getName() + " in entity " + getEntityClass().getName());
 			}
 
 			Entry<Field, AbstractField> newEntityFieldEntry = new SimpleEntry<Field, AbstractField>(

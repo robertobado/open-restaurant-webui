@@ -52,7 +52,7 @@ public class ConfigurationManager extends BaseEntityManager{
 
 		Notification notification;
 		try {
-			httpPut.setEntity(new StringEntity(requestBody));
+			httpPut.setEntity(new StringEntity(requestBody, UTF_8));
 			HttpResponse response = getHttpClient().execute(httpPut);
 
 			if (HttpStatus.SC_OK == response.getStatusLine()
