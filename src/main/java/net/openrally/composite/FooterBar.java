@@ -10,7 +10,7 @@ public class FooterBar extends HorizontalLayout {
 	private Label footerLabel;
 	
 	public FooterBar(){
-		footerLabel = new Label("Open Restaurant v 0.0.1");
+		footerLabel = new Label("Open Restaurant v 0.1.0");
         addComponent(footerLabel);
 	}
 

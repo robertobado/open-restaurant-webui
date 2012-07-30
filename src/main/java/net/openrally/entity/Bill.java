@@ -13,6 +13,7 @@ public class Bill extends Entity {
 	private String status;
 	private Long openTimestamp;
 	private Long closeTimestamp;
+	private Integer pax;
 	
 	public Long getBillId() {
 		return billId;
@@ -43,6 +44,12 @@ public class Bill extends Entity {
 	}
 	public void setCloseTimestamp(Long closeTimestamp) {
 		this.closeTimestamp = closeTimestamp;
+	}
+	public Integer getPax() {
+		return pax;
+	}
+	public void setPax(Integer pax) {
+		this.pax = pax;
 	}
 	
 }

@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import net.openrally.SessionStorage;
+import net.openrally.content.bill.CloseBillModal;
 import net.openrally.entity.Bill;
 import net.openrally.entity.BillItem;
 import net.openrally.entity.ConsumptionIdentifier;
@@ -127,6 +128,7 @@ public class BillContent extends TabSheet {
 		closedBillsListTable.setColumnHeader("openTimestamp", "Abertura");
 		closedBillsListTable.setColumnHeader("closeTimestamp", "Fechamento");
 		closedBillsListTable.setColumnHeader("reopenButton", "Reabrir");
+		closedBillsListTable.setColumnHeader("printButton", "Imprimir");
 
 		closedBillsListTable.setSizeFull();
 
@@ -194,7 +196,6 @@ public class BillContent extends TabSheet {
 		openBillsListTable.setColumnHeader("total", "Total");
 		openBillsListTable.setColumnHeader("openTimestamp", "Abertura");
 		openBillsListTable.setColumnHeader("closeButton", "Fechar");
-		openBillsListTable.setColumnHeader("printButton", "Imprimir");
 
 		openBillsListTable.setSizeFull();
 
@@ -234,29 +235,29 @@ public class BillContent extends TabSheet {
 		rightVerticalLayout.setExpandRatio(openBillItemsListTable, 0.5f);
 	}
 
-	private void refreshClosedBillsList() {
+	public void refreshClosedBillsList() {
 		Container closedBillsContainer = generateClosedBillsContainer();
 		closedBillsListTable.setContainerDataSource(closedBillsContainer);
 
 	}
 
-	private void refreshClosedIdentifiersList() {
+	public void refreshClosedIdentifiersList() {
 		Container closedConsumptionIdentifiersContainer = generateClosedConsumptionIdentifiersContainer();
 		closedConsumptionIdentifiersListTable
 				.setContainerDataSource(closedConsumptionIdentifiersContainer);
 	}
 
-	private void refreshOpenBillsList() {
+	public void refreshOpenBillsList() {
 		Container openBillsContainer = generateOpenBillsContainer();
 		openBillsListTable.setContainerDataSource(openBillsContainer);
 	}
 
-	private void refreshOpenBillItemsList() {
+	public void refreshOpenBillItemsList() {
 		Container billItemContainer = generateOpenBillItemContainer();
 		openBillItemsListTable.setContainerDataSource(billItemContainer);
 	}
 
-	private void refreshClosedBillItemsList() {
+	public void refreshClosedBillItemsList() {
 		Container billItemContainer = generateClosedBillItemContainer();
 		closedBillItemsListTable.setContainerDataSource(billItemContainer);
 	}
@@ -414,7 +415,6 @@ public class BillContent extends TabSheet {
 		container.addContainerProperty("total", String.class, null);
 		container.addContainerProperty("openTimestamp", String.class, null);
 		container.addContainerProperty("closeButton", Button.class, null);
-		container.addContainerProperty("printButton", Button.class, null);
 
 		for (Bill bill : openBillList) {
 			Item item = null;
@@ -452,12 +452,6 @@ public class BillContent extends TabSheet {
 			closeButton.addListener(Button.ClickEvent.class, this,
 					"closeBillEventListener");
 			item.getItemProperty("closeButton").setValue(closeButton);
-
-			Button printButton = new Button("Imprimir");
-			printButton.setData(bill);
-			printButton.addListener(Button.ClickEvent.class, this,
-					"printBillEventListener");
-			item.getItemProperty("printButton").setValue(printButton);
 
 		}
 
@@ -591,6 +585,8 @@ public class BillContent extends TabSheet {
 		container.addContainerProperty("closeTimestamp", String.class, null);
 		container.addContainerProperty("reopenButton", Button.class, null);
 
+		container.addContainerProperty("printButton", Button.class, null);
+
 		Map<Long, ConsumptionIdentifier> consumptionIdentifierMap = (Map<Long, ConsumptionIdentifier>) consumptionIdentifierManager
 				.getEntityMap();
 
@@ -638,6 +634,12 @@ public class BillContent extends TabSheet {
 			reopenButton.addListener(Button.ClickEvent.class, this,
 					"reopenBillClickListener");
 			item.getItemProperty("reopenButton").setValue(reopenButton);
+			
+			Button printButton = new Button("Imprimir");
+			printButton.setData(bill);
+			printButton.addListener(Button.ClickEvent.class, this,
+					"printBillEventListener");
+			item.getItemProperty("printButton").setValue(printButton);
 		}
 
 		container.sort(new Object[] { "closeTimestamp" },
@@ -729,18 +731,9 @@ public class BillContent extends TabSheet {
 
 	public void closeBillEventListener(ClickEvent event) {
 		Bill bill = (Bill) ((Button) event.getComponent()).getData();
-		bill.setStatus(Status.CLOSED.toString());
-
-		Notification notification = billManager.updateEntity(bill);
-
-		getWindow().showNotification(notification);
-
-		if (notification.getDelayMsec() > 0) {
-			refreshOpenBillsList();
-			refreshClosedIdentifiersList();
-			refreshOpenBillItemsList();
-			refreshClosedBillsList();
-		}
+		
+		CloseBillModal closeBillModal = new CloseBillModal(billManager, bill, this);
+		getWindow().addWindow(closeBillModal);
 	}
 
 	public void printBillEventListener(ClickEvent event) {
@@ -755,7 +748,7 @@ public class BillContent extends TabSheet {
 
 		Map<String, Object> dataModel = new HashMap<String, Object>();
 
-		fillDataModelWithGeneralAttributes(dataModel, billItems, configuration.getCompanyName());
+		fillDataModelWithGeneralAttributes(dataModel, billItems, configuration.getCompanyName(), bill);
 
 		fillDataModelWithProductsAttributes(dataModel, billItems);
 		
@@ -844,7 +837,7 @@ public class BillContent extends TabSheet {
 	}
 
 	private void fillDataModelWithGeneralAttributes(
-			Map<String, Object> dataModel, List<BillItem> billItems, String companyName) {
+			Map<String, Object> dataModel, List<BillItem> billItems, String companyName, Bill bill) {
 		Date date = new Date();
 		DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 		format.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
@@ -858,6 +851,16 @@ public class BillContent extends TabSheet {
 		}
 		
 		dataModel.put("grand_total", totalAmount);
+		
+		Integer pax = bill.getPax();
+		
+		if(null == pax){
+			pax = 1;
+		}
+		
+		dataModel.put("pax", pax);
+		
+		dataModel.put("total_per_person", totalAmount/pax);
 		
 		dataModel.put("company_name", companyName);
 	}
@@ -982,6 +985,10 @@ public class BillContent extends TabSheet {
 		}
 
 		return summarizedBillItems;
+	}
+	
+	public void displayNotification(Notification notification){
+		getWindow().showNotification(notification);
 	}
 
 }

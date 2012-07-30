@@ -89,6 +89,7 @@ public class BillManager extends BaseEntityManager {
 
 		entityRequestBody.setConsumptionIdentifierId(consumptionIdentifierId);
 		entityRequestBody.setStatus(Status.OPEN.toString());
+		entityRequestBody.setPax(1);
 		
 		String requestBody = gson.toJson(entityRequestBody);
 		
